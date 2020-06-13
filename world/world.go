@@ -64,3 +64,7 @@ func (w *World) GetChunk(x int32, y int32) *Chunk {
 	}
 	return chunk
 }
+
+func GetChunkAtPos(x int, y int) (int, int) {
+	return x / width, y / height
+}

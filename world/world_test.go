@@ -26,3 +26,21 @@ func TestWorld(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestGetChunkAtPos(t *testing.T) {
+	var x, y int
+	x, y = GetChunkAtPos(20, 20)
+	if x != 0 || y != 0 {
+		t.Fail()
+	}
+
+	x, y = GetChunkAtPos(1000, 20)
+	if x != 3 || y != 0 {
+		t.Fail()
+	}
+
+	x, y = GetChunkAtPos(1000, 1000)
+	if x != 3 || y != 3 {
+		t.Fail()
+	}
+}
