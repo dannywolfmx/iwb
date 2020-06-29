@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var data *world.World
+var data world.World
 
 type chunkUpdatePayload struct {
 	X     string
@@ -91,7 +91,7 @@ func putChunks(w http.ResponseWriter, r *http.Request) {
 
 // CreateHTTPServer returns a http.Handler for creating an HTTP REST API.
 func CreateHTTPServer() *mux.Router {
-	data = world.NewWorld()
+	data = world.NewRAMWorld()
 	router := mux.NewRouter()
 	router.HandleFunc("/chunks/{x}/{y}", getChunk).Methods("GET")
 	router.HandleFunc("/chunks", putChunks).Methods("PUT")

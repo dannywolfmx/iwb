@@ -13,7 +13,7 @@ type WorldView struct {
 	cursorX, cursorY              int
 	viewportX, viewportY          int
 	viewportWidth, viewportHeight int
-	world                         *world.World
+	world                         world.World
 }
 
 func (w *WorldView) moveCursorUp() {
@@ -56,7 +56,7 @@ func (w *WorldView) moveCursorRight() {
 	}
 }
 
-func NewWorldView(w *world.World) *WorldView {
+func NewWorldView(w world.World) *WorldView {
 	wv := new(WorldView)
 	wv.Box = tview.NewBox()
 	wv.Box.SetBorder(true)

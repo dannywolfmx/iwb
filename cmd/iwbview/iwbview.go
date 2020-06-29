@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	world := world.NewWorld()
+	world := world.NewRAMWorld()
 	box := ui.NewWorldView(world)
 	if err := tview.NewApplication().SetRoot(box, true).Run(); err != nil {
 		panic(err)
