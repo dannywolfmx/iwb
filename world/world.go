@@ -13,6 +13,7 @@ type Chunk interface {
 
 type World interface {
 	GetChunk(x int32, y int32) Chunk
+	Persist() error
 }
 
 func GetChunkAtPos(x int, y int) (int, int) {

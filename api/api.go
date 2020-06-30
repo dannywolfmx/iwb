@@ -9,7 +9,7 @@ import (
 	"unicode/utf8"
 
 	"danirod.es/pkg/iwb/world"
-	"danirod.es/pkg/iwb/world/memory"
+	"danirod.es/pkg/iwb/world/file"
 	"github.com/gorilla/mux"
 )
 
@@ -86,13 +86,17 @@ func putChunks(w http.ResponseWriter, r *http.Request) {
 
 	chunk := data.GetChunk(int32(x/256), int32(y/256))
 	chunk.SetRune(int32(x%256), int32(y%256), value)
+	err = data.Persist()
+	if err != nil {
+		panic(err)
+	}
 	w.WriteHeader(http.StatusAccepted)
 	fmt.Fprintf(w, "OK")
 }
 
 // CreateHTTPServer returns a http.Handler for creating an HTTP REST API.
 func CreateHTTPServer() *mux.Router {
-	data = memory.NewMemoryWorld()
+	data = file.NewFileWorld()
 	router := mux.NewRouter()
 	router.HandleFunc("/chunks/{x}/{y}", getChunk).Methods("GET")
 	router.HandleFunc("/chunks", putChunks).Methods("PUT")

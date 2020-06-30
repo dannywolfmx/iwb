@@ -23,6 +23,16 @@ func NewMemoryChunk() *MemoryChunk {
 	return chunk
 }
 
+func (c *MemoryChunk) GetData() []rune {
+	return c.data
+}
+
+func (c *MemoryChunk) SetData(in []rune) {
+	for i, value := range in {
+		c.data[i] = value
+	}
+}
+
 // LastUpdatedAt returns the timestamp at which the chunk was last updated.
 func (c *MemoryChunk) LastUpdatedAt() int64 {
 	return c.lastUpdate
@@ -65,4 +75,8 @@ func (w *MemoryWorld) GetChunk(x int32, y int32) world.Chunk {
 		w.chunks[y*width+x] = chunk
 	}
 	return chunk
+}
+
+func (w *MemoryWorld) Persist() error {
+	return nil
 }
