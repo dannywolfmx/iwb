@@ -9,6 +9,7 @@ import (
 	"unicode/utf8"
 
 	"danirod.es/pkg/iwb/world"
+	"danirod.es/pkg/iwb/world/memory"
 	"github.com/gorilla/mux"
 )
 
@@ -91,7 +92,7 @@ func putChunks(w http.ResponseWriter, r *http.Request) {
 
 // CreateHTTPServer returns a http.Handler for creating an HTTP REST API.
 func CreateHTTPServer() *mux.Router {
-	data = world.NewRAMWorld()
+	data = memory.NewMemoryWorld()
 	router := mux.NewRouter()
 	router.HandleFunc("/chunks/{x}/{y}", getChunk).Methods("GET")
 	router.HandleFunc("/chunks", putChunks).Methods("PUT")
