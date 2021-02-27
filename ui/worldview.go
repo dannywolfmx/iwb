@@ -3,8 +3,8 @@ package ui
 import (
 	"fmt"
 
-	"danirod.es/pkg/iwb/world"
-	"github.com/gdamore/tcell"
+	"github.com/dannywolfmx/iwb/world"
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -73,10 +73,10 @@ func NewWorldView(w world.World) *WorldView {
 		} else if event.Key() == tcell.KeyRight {
 			wv.moveCursorRight()
 		} else if event.Key() == tcell.KeyRune {
-			cx := int32(wv.cursorX / 256)
-			cy := int32(wv.cursorY / 256)
-			ox := int32(wv.cursorX % 256)
-			oy := int32(wv.cursorY % 256)
+			cx := wv.cursorX / 256
+			cy := wv.cursorY / 256
+			ox := wv.cursorX % 256
+			oy := wv.cursorY % 256
 			wv.world.GetChunk(cx, cy).SetRune(ox, oy, event.Rune())
 			wv.moveCursorRight()
 		} else {
@@ -106,7 +106,7 @@ func NewWorldView(w world.World) *WorldView {
 }
 
 func (w *WorldView) drawChunk(screen tcell.Screen, chunkX, chunkY int) {
-	chunk := w.world.GetChunk(int32(chunkX), int32(chunkY))
+	chunk := w.world.GetChunk(chunkX, chunkY)
 	chunkTopLeftX := 256*chunkX - w.viewportX
 	chunkTopLeftY := 256*chunkY - w.viewportY
 
@@ -114,7 +114,7 @@ func (w *WorldView) drawChunk(screen tcell.Screen, chunkX, chunkY int) {
 		for y := 0; y < 256; y++ {
 			posX := x + chunkTopLeftX
 			posY := y + chunkTopLeftY
-			screen.SetCell(posX, posY, tcell.StyleDefault, chunk.GetRune(int32(x), int32(y)))
+			screen.SetCell(posX, posY, tcell.StyleDefault, chunk.GetRune(x, y))
 		}
 	}
 }

@@ -5,14 +5,14 @@ const width = 256
 const height = 256
 
 type Chunk interface {
-	GetRune(x int32, y int32) rune
-	SetRune(x int32, y int32, char rune)
+	GetRune(x int, y int) rune
+	SetRune(x int, y int, char rune)
 	LastUpdatedAt() int64
 	GetRunes() string
 }
 
 type World interface {
-	GetChunk(x int32, y int32) Chunk
+	GetChunk(x int, y int) Chunk
 	Persist() error
 }
 

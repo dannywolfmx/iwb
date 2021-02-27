@@ -1,7 +1,10 @@
 package memory
 
-import "time"
-import "danirod.es/pkg/iwb/world"
+import (
+	"time"
+
+	"github.com/dannywolfmx/iwb/world"
+)
 
 const width = 256
 
@@ -44,12 +47,12 @@ func (c *MemoryChunk) GetRunes() string {
 }
 
 // GetRune returns the rune at position (x,y)
-func (c *MemoryChunk) GetRune(x int32, y int32) rune {
+func (c *MemoryChunk) GetRune(x int, y int) rune {
 	return c.data[y*width+x]
 }
 
 // SetRune updates the value of a given coordinate in a chunk
-func (c *MemoryChunk) SetRune(x int32, y int32, char rune) {
+func (c *MemoryChunk) SetRune(x int, y int, char rune) {
 	c.data[y*width+x] = char
 	c.lastUpdate = time.Now().Unix()
 }
@@ -68,7 +71,7 @@ func NewMemoryWorld() *MemoryWorld {
 	}
 }
 
-func (w *MemoryWorld) GetChunk(x int32, y int32) world.Chunk {
+func (w *MemoryWorld) GetChunk(x int, y int) world.Chunk {
 	chunk := w.chunks[y*width+x]
 	if chunk == nil {
 		chunk = NewMemoryChunk()

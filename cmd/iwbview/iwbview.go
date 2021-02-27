@@ -1,8 +1,8 @@
 package main
 
 import (
-	"danirod.es/pkg/iwb/ui"
-	"danirod.es/pkg/iwb/world/memory"
+	"github.com/dannywolfmx/iwb/ui"
+	"github.com/dannywolfmx/iwb/world/memory"
 	"github.com/rivo/tview"
 )
 
