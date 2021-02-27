@@ -1,22 +1,42 @@
 package ui
 
 import (
-	"fmt"
-
 	"github.com/dannywolfmx/iwb/world"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
-type WorldView struct {
-	*tview.Box
+type worldView struct {
+	*tview.Grid
 	cursorX, cursorY              int
 	viewportX, viewportY          int
 	viewportWidth, viewportHeight int
 	world                         world.World
 }
 
-func (w *WorldView) moveCursorUp() {
+//NewWorldView create a worldView
+func NewWorldView(world world.World) *worldView {
+	view := &worldView{
+		Grid:  newDefaultGrid(),
+		world: world,
+	}
+
+	return view
+}
+
+//newDefaultGrid will set a default data to tview.Grid struct
+//
+//* Show a border arround the terminal
+func newDefaultGrid() *tview.Grid {
+	grid := tview.NewGrid()
+
+	grid.SetBorder(true)
+
+	return grid
+
+}
+
+func (w *worldView) moveCursorUp() {
 	if w.cursorY == 0 {
 		return
 	}
@@ -26,7 +46,7 @@ func (w *WorldView) moveCursorUp() {
 	}
 }
 
-func (w *WorldView) moveCursorDown() {
+func (w *worldView) moveCursorDown() {
 	if w.cursorY == (256*256 - 1) {
 		return
 	}
@@ -36,7 +56,7 @@ func (w *WorldView) moveCursorDown() {
 	}
 }
 
-func (w *WorldView) moveCursorLeft() {
+func (w *worldView) moveCursorLeft() {
 	if w.cursorX == 0 {
 		return
 	}
@@ -46,7 +66,7 @@ func (w *WorldView) moveCursorLeft() {
 	}
 }
 
-func (w *WorldView) moveCursorRight() {
+func (w *worldView) moveCursorRight() {
 	if w.cursorX == (256*256 - 1) {
 		return
 	}
@@ -56,56 +76,60 @@ func (w *WorldView) moveCursorRight() {
 	}
 }
 
-func NewWorldView(w world.World) *WorldView {
-	wv := new(WorldView)
-	wv.Box = tview.NewBox()
-	wv.Box.SetBorder(true)
-	wv.world = w
-	reverse := tcell.StyleDefault.Reverse(true)
-	wv.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		wv.Box.SetTitle(fmt.Sprintf("(%d,%d)", wv.cursorX, wv.cursorY))
-		if event.Key() == tcell.KeyDown {
-			wv.moveCursorDown()
-		} else if event.Key() == tcell.KeyUp {
-			wv.moveCursorUp()
-		} else if event.Key() == tcell.KeyLeft {
-			wv.moveCursorLeft()
-		} else if event.Key() == tcell.KeyRight {
-			wv.moveCursorRight()
-		} else if event.Key() == tcell.KeyRune {
-			cx := wv.cursorX / 256
-			cy := wv.cursorY / 256
-			ox := wv.cursorX % 256
-			oy := wv.cursorY % 256
-			wv.world.GetChunk(cx, cy).SetRune(ox, oy, event.Rune())
-			wv.moveCursorRight()
-		} else {
-			return event
-		}
-		return nil
-	})
-	wv.SetDrawFunc(func(screen tcell.Screen, x, y, width, height int) (int, int, int, int) {
-		/* Update the viewport if it has changed. */
-		wv.viewportWidth = width
-		wv.viewportHeight = height
+//func newWorldView(w world.World) *worldView {
+//	wv := new(worldView)
+//
+//	wv.Box = tview.NewBox()
+//	wv.Box.SetBorder(true)
+//	wv.world = w
+//
+//	//Pendiente
+//	reverse := tcell.StyleDefault.Reverse(true)
+//
+//	wv.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+//		wv.Box.SetTitle(fmt.Sprintf("(%d,%d)", wv.cursorX, wv.cursorY))
+//		if event.Key() == tcell.KeyDown {
+//			wv.moveCursorDown()
+//		} else if event.Key() == tcell.KeyUp {
+//			wv.moveCursorUp()
+//		} else if event.Key() == tcell.KeyLeft {
+//			wv.moveCursorLeft()
+//		} else if event.Key() == tcell.KeyRight {
+//			wv.moveCursorRight()
+//		} else if event.Key() == tcell.KeyRune {
+//			cx := wv.cursorX / 256
+//			cy := wv.cursorY / 256
+//			ox := wv.cursorX % 256
+//			oy := wv.cursorY % 256
+//			wv.world.GetChunk(cx, cy).SetRune(ox, oy, event.Rune())
+//			wv.moveCursorRight()
+//		} else {
+//			return event
+//		}
+//		return nil
+//	})
+//	wv.SetDrawFunc(func(screen tcell.Screen, x, y, width, height int) (int, int, int, int) {
+//		/* Update the viewport if it has changed. */
+//		wv.viewportWidth = width
+//		wv.viewportHeight = height
+//
+//		/* Get the chunks that will have to be repainted. */
+//		topLeftChunkX, topLeftChunkY := world.GetChunkAtPos(wv.viewportX, wv.viewportY)
+//		bottomRightChunkX, bottomRightChunkY := world.GetChunkAtPos(wv.viewportX+width-1, wv.viewportY+height-1)
+//
+//		for x := topLeftChunkX; x <= bottomRightChunkX; x++ {
+//			for y := topLeftChunkY; y <= bottomRightChunkY; y++ {
+//				wv.drawChunk(screen, x, y)
+//			}
+//		}
+//
+//		screen.SetCell(wv.cursorX-wv.viewportX, wv.cursorY-wv.viewportY, reverse, ' ')
+//		return x, y, width, height
+//	})
+//	return wv
+//}
 
-		/* Get the chunks that will have to be repainted. */
-		topLeftChunkX, topLeftChunkY := world.GetChunkAtPos(wv.viewportX, wv.viewportY)
-		bottomRightChunkX, bottomRightChunkY := world.GetChunkAtPos(wv.viewportX+width-1, wv.viewportY+height-1)
-
-		for x := topLeftChunkX; x <= bottomRightChunkX; x++ {
-			for y := topLeftChunkY; y <= bottomRightChunkY; y++ {
-				wv.drawChunk(screen, x, y)
-			}
-		}
-
-		screen.SetCell(wv.cursorX-wv.viewportX, wv.cursorY-wv.viewportY, reverse, ' ')
-		return x, y, width, height
-	})
-	return wv
-}
-
-func (w *WorldView) drawChunk(screen tcell.Screen, chunkX, chunkY int) {
+func (w *worldView) drawChunk(screen tcell.Screen, chunkX, chunkY int) {
 	chunk := w.world.GetChunk(chunkX, chunkY)
 	chunkTopLeftX := 256*chunkX - w.viewportX
 	chunkTopLeftY := 256*chunkY - w.viewportY
@@ -114,7 +138,8 @@ func (w *WorldView) drawChunk(screen tcell.Screen, chunkX, chunkY int) {
 		for y := 0; y < 256; y++ {
 			posX := x + chunkTopLeftX
 			posY := y + chunkTopLeftY
-			screen.SetCell(posX, posY, tcell.StyleDefault, chunk.GetRune(x, y))
+			//TODO set a combc value
+			screen.SetContent(posX+12, posY+12, chunk.GetRune(x, y), nil, tcell.StyleDefault)
 		}
 	}
 }

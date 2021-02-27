@@ -7,9 +7,11 @@ import (
 )
 
 func main() {
+
 	world := memory.NewMemoryWorld()
-	box := ui.NewWorldView(world)
-	if err := tview.NewApplication().SetRoot(box, true).Run(); err != nil {
+	worldView := ui.NewWorldView(world)
+
+	if err := tview.NewApplication().SetRoot(worldView, true).Run(); err != nil {
 		panic(err)
 	}
 }
