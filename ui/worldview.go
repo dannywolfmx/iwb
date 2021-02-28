@@ -25,8 +25,8 @@ func NewWorldView(world world.World, app *tview.Application) *worldView {
 
 	return view
 }
-func newPrimitive(text string) tview.Primitive {
-	return tview.NewTextView().SetText(text).SetTextColor(tcell.Color115).SetBackgroundColor(tcell.Color100)
+func newPrimitive() tview.Primitive {
+	return tview.NewTextView().SetBackgroundColor(tcell.Color115)
 }
 
 type Grid struct {
@@ -37,16 +37,16 @@ type Grid struct {
 //* Show a border arround the terminal
 //* Show a chess like board
 func newDefaultGrid(app *tview.Application) *tview.Grid {
-	rowNum := 254
-	collNum := 254
-	grid := tview.NewGrid().SetSize(rowNum, collNum, 1, 1)
+	rowNum := 2
+	collNum := 2
+	grid := tview.NewGrid().SetSize(rowNum, collNum, 0, 0)
 
-	go fillGrid(app, grid, rowNum, collNum)
+	go fillChessBoard(app, grid, rowNum, collNum)
 
 	return grid
 }
 
-func fillGrid(app *tview.Application, grid *tview.Grid, rowNum int, collNum int) []tview.Primitive {
+func fillChessBoard(app *tview.Application, grid *tview.Grid, rowNum int, collNum int) []tview.Primitive {
 	cell := []tview.Primitive{}
 	drawCell := true
 
@@ -54,9 +54,9 @@ func fillGrid(app *tview.Application, grid *tview.Grid, rowNum int, collNum int)
 		for row := 0; row <= rowNum-1; row++ {
 			for coll := 0; coll <= collNum; coll++ {
 				if drawCell = !drawCell; drawCell {
-					primitive := newPrimitive(fmt.Sprintf("%d,%d", row, coll))
+					primitive := newPrimitive()
 					cell = append(cell, primitive)
-					grid.AddItem(primitive, row, coll, 1, 1, 1, 1, true)
+					grid.AddItem(primitive, row, coll, 1, 1, 0, 0, true)
 				}
 			}
 		}
