@@ -17,9 +17,9 @@ type worldView struct {
 }
 
 //NewWorldView create a worldView
-func NewWorldView(world world.World) *worldView {
+func NewWorldView(world world.World, app *tview.Application) *worldView {
 	view := &worldView{
-		Grid:  newDefaultGrid(),
+		Grid:  newDefaultGrid(app),
 		world: world,
 	}
 
@@ -36,24 +36,32 @@ type Grid struct {
 //
 //* Show a border arround the terminal
 //* Show a chess like board
-func newDefaultGrid() *tview.Grid {
+func newDefaultGrid(app *tview.Application) *tview.Grid {
 	rowNum := 254
 	collNum := 254
 	grid := tview.NewGrid().SetSize(rowNum, collNum, 1, 1)
 
-	cell := []tview.Primitive{}
+	go fillGrid(app, grid, rowNum, collNum)
 
+	return grid
+}
+
+func fillGrid(app *tview.Application, grid *tview.Grid, rowNum int, collNum int) []tview.Primitive {
+	cell := []tview.Primitive{}
 	drawCell := true
-	for row := 0; row <= rowNum-1; row++ {
-		for coll := 0; coll <= collNum; coll++ {
-			if drawCell = !drawCell; drawCell {
-				primitive := newPrimitive(fmt.Sprintf("%d,%d", row, coll))
-				cell = append(cell, primitive)
-				grid.AddItem(primitive, row, coll, 1, 1, 1, 1, true)
+
+	app.QueueUpdateDraw(func() {
+		for row := 0; row <= rowNum-1; row++ {
+			for coll := 0; coll <= collNum; coll++ {
+				if drawCell = !drawCell; drawCell {
+					primitive := newPrimitive(fmt.Sprintf("%d,%d", row, coll))
+					cell = append(cell, primitive)
+					grid.AddItem(primitive, row, coll, 1, 1, 1, 1, true)
+				}
 			}
 		}
-	}
-	return grid
+	})
+	return cell
 }
 
 func (w *worldView) moveCursorUp() {

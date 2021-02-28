@@ -8,10 +8,12 @@ import (
 
 func main() {
 
-	world := memory.NewMemoryWorld()
-	worldView := ui.NewWorldView(world)
+	app := tview.NewApplication()
 
-	if err := tview.NewApplication().SetRoot(worldView, true).Run(); err != nil {
+	world := memory.NewMemoryWorld()
+	worldView := ui.NewWorldView(world, app)
+
+	if err := app.SetRoot(worldView, true).Run(); err != nil {
 		panic(err)
 	}
 }
