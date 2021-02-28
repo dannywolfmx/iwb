@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"fmt"
+
 	"github.com/dannywolfmx/iwb/world"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -23,14 +25,27 @@ func NewWorldView(world world.World) *worldView {
 
 	return view
 }
+func newPrimitive(text string) tview.Primitive {
+	return tview.NewTextView().SetText(text).SetTextColor(tcell.Color115).SetBackgroundColor(tcell.Color100)
+}
 
 //newDefaultGrid will set a default data to tview.Grid struct
 //
 //* Show a border arround the terminal
+//* Show a chess like board
 func newDefaultGrid() *tview.Grid {
-	grid := tview.NewGrid()
+	rowNum := 16
+	collNum := 16
+	grid := tview.NewGrid().SetSize(rowNum, collNum, 0, 0)
 
-	grid.SetBorder(true)
+	drawCell := true
+	for row := 0; row <= rowNum-1; row++ {
+		for coll := 0; coll <= collNum; coll++ {
+			if drawCell = !drawCell; drawCell {
+				grid.AddItem(newPrimitive(fmt.Sprintf("%d,%d", row, coll)), row, coll, 1, 1, 1, 1, false)
+			}
+		}
+	}
 
 	return grid
 
