@@ -34,9 +34,9 @@ func newPrimitive(text string) tview.Primitive {
 //* Show a border arround the terminal
 //* Show a chess like board
 func newDefaultGrid() *tview.Grid {
-	rowNum := 16
-	collNum := 16
-	grid := tview.NewGrid().SetSize(rowNum, collNum, 0, 0)
+	rowNum := 254
+	collNum := 254
+	grid := tview.NewGrid().SetSize(rowNum, collNum, 1, 1)
 
 	drawCell := true
 	for row := 0; row <= rowNum-1; row++ {
