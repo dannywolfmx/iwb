@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/gdamore/tcell/v2/encoding"
 )
 
 //Alis to better reading
@@ -20,8 +19,6 @@ type worldView struct {
 
 //NewWorldView create a worldView
 func NewWorldView(screen tcell.Screen) *worldView {
-
-	encoding.Register()
 
 	return &worldView{
 		screen: screen,
@@ -91,28 +88,4 @@ func (w *worldView) Run() {
 //Sync will sync any single cell in the screen, it is more expensive than use tcell.Screen.Show()
 func (w *worldView) Sync() {
 	w.screen.Sync()
-}
-
-func DefaultStyle() tcell.Style {
-	return tcell.StyleDefault
-}
-
-//newDefaultGrid will set a default data to tview.Grid struct
-//
-//* Show a border arround the terminal
-//* Show a chess like board
-func NewDefaultScreen(style tcell.Style) (tcell.Screen, error) {
-	screen, err := tcell.NewScreen()
-
-	if err != nil {
-		return screen, err
-	}
-
-	if err = screen.Init(); err != nil {
-		return screen, err
-	}
-
-	screen.SetStyle(style)
-
-	return screen, nil
 }
