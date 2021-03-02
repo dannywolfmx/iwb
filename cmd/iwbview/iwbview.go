@@ -1,19 +1,28 @@
 package main
 
 import (
+	"os"
+
 	"github.com/dannywolfmx/iwb/ui"
 	"github.com/dannywolfmx/iwb/world/memory"
-	"github.com/rivo/tview"
+	"github.com/gdamore/tcell/v2"
 )
 
 func main() {
 
-	app := tview.NewApplication()
-
 	world := memory.NewMemoryWorld()
-	worldView := ui.NewWorldView(world, app)
+	worldUI := ui.NewWorldView(world)
 
-	if err := app.SetRoot(worldView, true).Run(); err != nil {
-		panic(err)
+	for {
+		switch ev := worldUI.Screen.PollEvent().(type) {
+		case *tcell.EventResize:
+			worldUI.Sync()
+		case *tcell.EventKey:
+			if ev.Key() == tcell.KeyEscape {
+				worldUI.Screen.Fini()
+				os.Exit(0)
+			}
+		}
+
 	}
 }
