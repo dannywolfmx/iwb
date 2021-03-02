@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"os"
+
 	"github.com/dannywolfmx/iwb/world"
 	"github.com/gdamore/tcell/v2"
 	"github.com/gdamore/tcell/v2/encoding"
@@ -8,7 +10,7 @@ import (
 )
 
 type worldView struct {
-	Screen                        tcell.Screen
+	screen                        tcell.Screen
 	cursorX, cursorY              int
 	viewportX, viewportY          int
 	viewportWidth, viewportHeight int
@@ -16,7 +18,23 @@ type worldView struct {
 }
 
 func (w *worldView) Sync() {
-	w.Screen.Sync()
+	w.screen.Sync()
+}
+
+func (w *worldView) Run() {
+	for {
+		switch ev := w.screen.PollEvent().(type) {
+		case *tcell.EventResize:
+			w.Sync()
+		case *tcell.EventKey:
+			eventKey := ev.Key()
+			if eventKey == tcell.KeyEscape || eventKey == tcell.KeyCtrlC {
+				w.screen.Fini()
+				os.Exit(0)
+			}
+		}
+
+	}
 }
 
 //NewWorldView create a worldView
@@ -32,7 +50,7 @@ func NewWorldView(world world.World) *worldView {
 	}
 
 	view := &worldView{
-		Screen: screen,
+		screen: screen,
 		world:  world,
 	}
 	SetCaptureInput(view)
