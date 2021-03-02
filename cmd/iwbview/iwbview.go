@@ -8,7 +8,5 @@ import (
 func main() {
 
 	world := memory.NewMemoryWorld()
-	worldUI := ui.NewWorldView(world)
-
-	worldUI.Run()
+	ui.NewWorldView(world).Run()
 }
