@@ -6,15 +6,16 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-//Alis to better reading
-type position = int
+type Position struct {
+	X, Y int
+}
 
 type worldView struct {
 	screen                        tcell.Screen
-	cursorX, cursorY              position
-	viewportX, viewportY          position
-	viewportWidth, viewportHeight position
+	cursorX, cursorY              int
+	viewportWidth, viewportHeight int
 	needUpdate                    bool
+	viewport                      Position
 }
 
 //NewWorldView create a worldView
@@ -31,19 +32,19 @@ func (w *worldView) Clear() {
 }
 
 //TODO controle the unrange position. ej: -1
-func (w *worldView) moveViewportX(newPosition position) {
-	w.viewportX += newPosition
+func (w *worldView) moveViewportX(newPosition int) {
+	w.viewport.X += newPosition
 }
 
 //TODO controle the unrange position. ej: -1
-func (w *worldView) moveViewportY(newPosition position) {
-	w.viewportY += newPosition
+func (w *worldView) moveViewportY(newPosition int) {
+	w.viewport.Y += newPosition
 }
 
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Pass the style by parameter
 func (w *worldView) printOnScreen(text rune) {
-	w.screen.SetContent(w.viewportX, w.viewportY, text, nil, tcell.StyleDefault)
+	w.screen.SetContent(w.viewport.X, w.viewport.Y, text, nil, tcell.StyleDefault)
 	//Move the position to the next rune
 	w.moveViewportX(1)
 	w.needUpdate = true
