@@ -73,21 +73,25 @@ func (w *worldView) Run() {
 			case tcell.KeyUp:
 				//Move the viewPort to the UP
 				w.moveViewportY(-1)
+				w.Draw()
 			case tcell.KeyDown:
 				//Move the viewPort to the DOWN
 				w.moveViewportY(1)
+				w.Draw()
 			case tcell.KeyRight:
 				//Move the viewPort to the RIGHT
 				w.moveViewportX(1)
+				w.Draw()
 			case tcell.KeyLeft:
 				//Move the viewPort to the LEFT
 				w.moveViewportX(-1)
+				w.Draw()
 			default:
 				text := ev.Rune()
 				w.state[w.viewport] = text
 				//Get Rune to print in the screen
-				w.Draw()
 				w.moveViewportX(1)
+				w.Draw()
 			}
 		}
 	}
