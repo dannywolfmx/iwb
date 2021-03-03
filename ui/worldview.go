@@ -16,13 +16,14 @@ type worldView struct {
 	viewportWidth, viewportHeight int
 	needUpdate                    bool
 	viewport                      Position
+	state                         map[Position]rune
 }
 
 //NewWorldView create a worldView
 func NewWorldView(screen tcell.Screen) *worldView {
-
 	return &worldView{
 		screen: screen,
+		state:  make(map[Position]rune),
 	}
 }
 
@@ -44,6 +45,7 @@ func (w *worldView) moveViewportY(newPosition int) {
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Pass the style by parameter
 func (w *worldView) printOnScreen(text rune) {
+	w.state[w.viewport] = text
 	w.screen.SetContent(w.viewport.X, w.viewport.Y, text, nil, tcell.StyleDefault)
 	//Move the position to the next rune
 	w.moveViewportX(1)
