@@ -44,12 +44,19 @@ func (w *worldView) moveViewportY(newPosition int) {
 
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Pass the style by parameter
-func (w *worldView) printOnScreen(text rune) {
-	w.state[w.viewport] = text
-	w.screen.SetContent(w.viewport.X, w.viewport.Y, text, nil, tcell.StyleDefault)
+func (w *worldView) printOnScreen(text rune, viewport Position, wv, hv int) {
+	//Print On Center of screen
+	w.screen.SetContent(viewport.X-w.viewport.X+wv/2, viewport.Y-w.viewport.Y+hv/2, text, nil, tcell.StyleDefault)
 	//Move the position to the next rune
-	w.moveViewportX(1)
-	w.needUpdate = true
+}
+
+func (w *worldView) Draw() {
+	w.screen.Clear()
+	wv, hv := w.screen.Size()
+	for viewport, text := range w.state {
+		w.printOnScreen(text, viewport, wv, hv)
+	}
+	w.screen.Show()
 }
 
 func (w *worldView) Run() {
@@ -76,14 +83,12 @@ func (w *worldView) Run() {
 				//Move the viewPort to the LEFT
 				w.moveViewportX(-1)
 			default:
+				text := ev.Rune()
+				w.state[w.viewport] = text
 				//Get Rune to print in the screen
-				w.printOnScreen(ev.Rune())
+				w.Draw()
+				w.moveViewportX(1)
 			}
-		}
-		//Check if the map need to repaint
-		if w.needUpdate {
-			w.screen.Show()
-			w.needUpdate = false
 		}
 	}
 }
