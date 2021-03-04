@@ -3,27 +3,24 @@ package ui
 import (
 	"os"
 
+	"github.com/dannywolfmx/iwb/world"
 	"github.com/gdamore/tcell/v2"
 )
-
-type Position struct {
-	X, Y int
-}
 
 type worldView struct {
 	screen                        tcell.Screen
 	cursorX, cursorY              int
 	viewportWidth, viewportHeight int
 	needUpdate                    bool
-	viewport                      Position
-	state                         map[Position]rune
+	viewport                      world.Position
+	state                         map[world.Position]rune
 }
 
 //NewWorldView create a worldView
 func NewWorldView(screen tcell.Screen) *worldView {
 	return &worldView{
 		screen: screen,
-		state:  make(map[Position]rune),
+		state:  make(map[world.Position]rune),
 	}
 }
 
@@ -33,18 +30,18 @@ func (w *worldView) Clear() {
 }
 
 //TODO controle the unrange position. ej: -1
-func (w *worldView) moveViewportX(newPosition int) {
-	w.viewport.X += newPosition
+func (w *worldView) moveViewportX(position int) {
+	w.viewport.X += position
 }
 
 //TODO controle the unrange position. ej: -1
-func (w *worldView) moveViewportY(newPosition int) {
-	w.viewport.Y += newPosition
+func (w *worldView) moveViewportY(position int) {
+	w.viewport.Y += newworld.Position
 }
 
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Pass the style by parameter
-func (w *worldView) printOnScreen(text rune, viewport Position, wv, hv int) {
+func (w *worldView) printOnScreen(text rune, viewport world.Position, wv, hv int) {
 	//Print On Center of screen
 	w.screen.SetContent(viewport.X-w.viewport.X+wv/2, viewport.Y-w.viewport.Y+hv/2, text, nil, tcell.StyleDefault)
 	//Move the position to the next rune

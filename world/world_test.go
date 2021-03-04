@@ -2,45 +2,25 @@ package world
 
 import "testing"
 
+type ChunkTest struct {
+	testRune rune
+}
+
+func (c *ChunkTest) GetRune(position Position) rune {
+	return c.testRune
+}
+func (c *ChunkTest) SetRune(position Position, char rune) {
+	c.testRune = char
+}
+func (c *ChunkTest) LastUpdatedAt() int64 {
+	return 0
+}
+
 func TestChunk(t *testing.T) {
-	chunk := NewChunk()
-	if chunk.GetRune(4, 4) != ' ' {
-		t.Fail()
-	}
-	chunk.SetRune(4, 4, 'k')
-	if chunk.GetRune(4, 4) != 'k' {
-		t.Fail()
-	}
-}
-
-func TestWorld(t *testing.T) {
-	world := NewWorld()
-	chunk := world.GetChunk(5, 5)
-	chunk.SetRune(4, 4, 'k')
-
-	chunk2 := world.GetChunk(5, 5)
-	if chunk != chunk2 {
-		t.Fail()
-	}
-	if chunk.GetRune(4, 4) != 'k' {
-		t.Fail()
-	}
-}
-
-func TestGetChunkAtPos(t *testing.T) {
-	var x, y int
-	x, y = GetChunkAtPos(20, 20)
-	if x != 0 || y != 0 {
-		t.Fail()
-	}
-
-	x, y = GetChunkAtPos(1000, 20)
-	if x != 3 || y != 0 {
-		t.Fail()
-	}
-
-	x, y = GetChunkAtPos(1000, 1000)
-	if x != 3 || y != 3 {
-		t.Fail()
+	chunk := &ChunkTest{}
+	position := Position{4, 4}
+	chunk.SetRune(position, 'k')
+	if chunk.GetRune(position) != 'k' {
+		t.Fatal("Should get a rune in the position")
 	}
 }
