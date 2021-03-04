@@ -8,21 +8,16 @@ import (
 )
 
 type worldView struct {
-	screen                        tcell.Screen
-	cursorX, cursorY              int
-	viewportWidth, viewportHeight int
-	needUpdate                    bool
-	viewport                      world.Position
-	state                         map[world.Position]rune
-	world                         world.World
-	actualChunk                   world.Chunk
+	screen      tcell.Screen
+	viewport    world.Position
+	world       world.World
+	actualChunk world.Chunk
 }
 
 //NewWorldView create a worldView
 func NewWorldView(screen tcell.Screen, w world.World) *worldView {
 	return &worldView{
 		screen: screen,
-		state:  make(map[world.Position]rune),
 		world:  w,
 		//TODO: Check the chunk sistem
 		actualChunk: w.GetChunk(0, 0),
