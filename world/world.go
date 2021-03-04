@@ -18,7 +18,10 @@ type Chunk interface {
 	LastUpdatedAt() int64
 }
 
+type PersistantWorld interface {
+	Persist() error
+}
+
 type World interface {
 	GetChunk(x int, y int) Chunk
-	Persist() error
 }

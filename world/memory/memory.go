@@ -66,7 +66,3 @@ func (w *MemoryWorld) GetChunk(x int, y int) world.Chunk {
 	}
 	return chunk
 }
-
-func (w *MemoryWorld) Persist() error {
-	return nil
-}
