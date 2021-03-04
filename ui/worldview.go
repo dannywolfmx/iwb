@@ -14,13 +14,18 @@ type worldView struct {
 	needUpdate                    bool
 	viewport                      world.Position
 	state                         map[world.Position]rune
+	world                         world.World
+	actualChunk                   world.Chunk
 }
 
 //NewWorldView create a worldView
-func NewWorldView(screen tcell.Screen) *worldView {
+func NewWorldView(screen tcell.Screen, w world.World) *worldView {
 	return &worldView{
 		screen: screen,
 		state:  make(map[world.Position]rune),
+		world:  w,
+		//TODO: Check the chunk sistem
+		actualChunk: w.GetChunk(0, 0),
 	}
 }
 
@@ -36,7 +41,7 @@ func (w *worldView) moveViewportX(position int) {
 
 //TODO controle the unrange position. ej: -1
 func (w *worldView) moveViewportY(position int) {
-	w.viewport.Y += newworld.Position
+	w.viewport.Y += position
 }
 
 //TODO the printer dont works with special characters, just support 1 rune at the time
@@ -50,7 +55,7 @@ func (w *worldView) printOnScreen(text rune, viewport world.Position, wv, hv int
 func (w *worldView) Draw() {
 	w.screen.Clear()
 	wv, hv := w.screen.Size()
-	for viewport, text := range w.state {
+	for viewport, text := range w.actualChunk.GetElements() {
 		w.printOnScreen(text, viewport, wv, hv)
 	}
 	w.screen.Show()
@@ -85,7 +90,7 @@ func (w *worldView) Run() {
 				w.Draw()
 			default:
 				text := ev.Rune()
-				w.state[w.viewport] = text
+				w.actualChunk.SetElement(w.viewport, text)
 				//Get Rune to print in the screen
 				w.moveViewportX(1)
 				w.Draw()

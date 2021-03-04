@@ -10,29 +10,17 @@ const width = 256
 
 const height = 256
 
-type Chunk = map[world.Position]rune
-
 type MemoryChunk struct {
-	data       Chunk
+	elements   world.Elements
 	lastUpdate int64
 }
 
 func NewMemoryChunk() *MemoryChunk {
 	chunk := &MemoryChunk{
-		data:       make(Chunk),
+		elements:   make(world.Elements),
 		lastUpdate: time.Now().Unix(),
 	}
 	return chunk
-}
-
-func (c *MemoryChunk) GetData() Chunk {
-	return c.data
-}
-
-func (c *MemoryChunk) SetData(in Chunk) {
-	for i, value := range in {
-		c.data[i] = value
-	}
 }
 
 // LastUpdatedAt returns the timestamp at which the chunk was last updated.
@@ -41,13 +29,18 @@ func (c *MemoryChunk) LastUpdatedAt() int64 {
 }
 
 // GetRune returns the rune at position (x,y)
-func (c *MemoryChunk) GetRune(position world.Position) rune {
-	return c.data[position]
+func (c *MemoryChunk) GetElements() world.Elements {
+	return c.elements
+}
+
+// GetRune returns the rune at position (x,y)
+func (c *MemoryChunk) GetElement(position world.Position) world.Element {
+	return c.elements[position]
 }
 
 // SetRune updates the value of a given coordinate in a chunk
-func (c *MemoryChunk) SetRune(position world.Position, char rune) {
-	c.data[position] = char
+func (c *MemoryChunk) SetElement(position world.Position, element world.Element) {
+	c.elements[position] = element
 	c.lastUpdate = time.Now().Unix()
 }
 

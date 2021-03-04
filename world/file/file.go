@@ -1,11 +1,14 @@
 package file
 
-import "encoding/binary"
-import "fmt"
-import "io/ioutil"
-import "bytes"
-import "danirod.es/pkg/iwb/world/memory"
-import "danirod.es/pkg/iwb/world"
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+	"io/ioutil"
+
+	"danirod.es/pkg/iwb/world"
+	"danirod.es/pkg/iwb/world/memory"
+)
 
 const width = 256
 
@@ -14,10 +17,10 @@ const height = 256
 type FileChunk struct {
 	*memory.MemoryChunk
 	root *FileWorld
-	id   int32
+	id   int
 }
 
-func NewFileChunk(w *FileWorld, id int32) *FileChunk {
+func NewFileChunk(w *FileWorld, id int) *FileChunk {
 	return &FileChunk{
 		MemoryChunk: memory.NewMemoryChunk(),
 		root:        w,
@@ -32,17 +35,17 @@ func (f *FileChunk) SetRune(x int32, y int32, char rune) {
 
 type FileWorld struct {
 	chunks      []*FileChunk
-	dirtyChunks map[int32]bool
+	dirtyChunks map[int]bool
 }
 
 func NewFileWorld() *FileWorld {
 	return &FileWorld{
 		chunks:      make([]*FileChunk, width*height),
-		dirtyChunks: map[int32]bool{},
+		dirtyChunks: map[int]bool{},
 	}
 }
 
-func decodeBytes(data []byte, w *FileWorld, id int32) (*FileChunk, error) {
+func decodeBytes(data []byte, w *FileWorld, id int) (*FileChunk, error) {
 	runes := make([]rune, width*height)
 	buffer := bytes.NewReader(data)
 	err := binary.Read(buffer, binary.LittleEndian, &runes)
@@ -64,7 +67,7 @@ func encodeBytes(chunk *FileChunk) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-func (w *FileWorld) GetChunk(x int32, y int32) world.Chunk {
+func (w *FileWorld) GetChunk(x int, y int) world.Chunk {
 	chunk := w.chunks[y*width+x]
 	if chunk != nil {
 		return chunk
@@ -105,6 +108,6 @@ func (w *FileWorld) Persist() error {
 		}
 	}
 
-	w.dirtyChunks = map[int32]bool{}
+	w.dirtyChunks = map[int]bool{}
 	return nil
 }

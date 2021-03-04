@@ -8,9 +8,13 @@ type Position struct {
 	X, Y int
 }
 
+type Element = rune
+type Elements = map[Position]rune
+
 type Chunk interface {
-	GetRune(position Position) rune
-	SetRune(position Position, char rune)
+	GetElement(position Position) Element
+	GetElements() Elements
+	SetElement(position Position, element Element)
 	LastUpdatedAt() int64
 }
 
