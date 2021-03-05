@@ -11,13 +11,13 @@ const width = 256
 const height = 256
 
 type MemoryChunk struct {
-	elements   world.Elements
+	Elements   world.Elements
 	lastUpdate int64
 }
 
 func NewMemoryChunk(elements world.Elements) *MemoryChunk {
 	chunk := &MemoryChunk{
-		elements:   elements,
+		Elements:   elements,
 		lastUpdate: time.Now().Unix(),
 	}
 	return chunk
@@ -30,17 +30,17 @@ func (c *MemoryChunk) LastUpdatedAt() int64 {
 
 // GetRune returns the rune at position (x,y)
 func (c *MemoryChunk) GetElements() world.Elements {
-	return c.elements
+	return c.Elements
 }
 
 // GetRune returns the rune at position (x,y)
 func (c *MemoryChunk) GetElement(position world.Position) world.Element {
-	return c.elements[position]
+	return c.Elements[position]
 }
 
 // SetRune updates the value of a given coordinate in a chunk
 func (c *MemoryChunk) SetElement(position world.Position, element world.Element) {
-	c.elements[position] = element
+	c.Elements[position] = element
 	c.lastUpdate = time.Now().Unix()
 }
 

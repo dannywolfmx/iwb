@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/dannywolfmx/iwb/world"
@@ -66,7 +67,9 @@ func (w *worldView) Run() {
 			case tcell.KeyCtrlC:
 				//CTRL + C to exit
 				w.screen.Fini()
-				w.world.Persist()
+				if err := w.world.Persist(); err != nil {
+					fmt.Println(err)
+				}
 				os.Exit(0)
 			case tcell.KeyUp:
 				//Move the viewPort to the UP
