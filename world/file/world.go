@@ -3,75 +3,68 @@ package file
 import (
 	"encoding/gob"
 	"os"
-	"sync"
 
 	"github.com/dannywolfmx/iwb/world"
+	"github.com/dannywolfmx/iwb/world/memory"
 )
 
-var lock sync.Mutex
+const Filename = "world.dat"
 
 type FileWorld struct {
-	sync.Mutex
-	chunks []*FileChunk
+	Chunks         []*memory.MemoryChunk
+	ActualPosition world.Position
 }
 
 func NewFileWorld() *FileWorld {
 	return &FileWorld{
-		chunks: make([]*FileChunk, 1),
+		Chunks: []*memory.MemoryChunk{
+			memory.NewMemoryChunk(make(world.Elements)),
+		},
 	}
 }
 
+func (w *FileWorld) SetPosition(position world.Position) {
+	w.ActualPosition = position
+}
+
+func (w *FileWorld) GetPosition() world.Position {
+	return w.ActualPosition
+}
+
 func (w *FileWorld) GetChunk(x int, y int) world.Chunk {
-	chunk := w.chunks[0]
-	if chunk != nil {
-		return chunk
-	}
+	return w.Chunks[0]
+}
 
-	// So the chunk exists and has been loaded. Decode it.
+func (w *FileWorld) Persist() error {
+	return SaveToFile(Filename, w)
+}
 
-	file, err := os.Open("chunk.dat")
-
+//SaveToFile will save an byte slice of data into the path file
+func SaveToFile(path string, world *FileWorld) error {
+	file, err := os.Create(Filename)
 	if err != nil {
+		return err
+	}
+	defer file.Close()
 
-		chunk := NewFileChunk(make(world.Elements))
-		w.chunks[0] = chunk
-		return chunk
+	encoder := gob.NewEncoder(file)
+
+	return encoder.Encode(world)
+}
+
+//TODO check the lock variable, its the same as SaveToFIle
+func LoadWorld(path string) (*FileWorld, error) {
+	world := NewFileWorld()
+	file, err := os.Open(Filename)
+	if err != nil {
+		return world, nil
 	}
 	defer file.Close()
 
 	decoder := gob.NewDecoder(file)
-
-	err = decoder.Decode(&w.chunks)
-
-	if err != nil {
-		panic(err)
-	}
-	return w.chunks[0]
-}
-
-func (w *FileWorld) Persist() error {
-	file, err := os.Create("chunk.dat")
-	if err != nil {
-		return err
+	if err := decoder.Decode(world); err != nil {
+		return nil, err
 	}
 
-	defer file.Close()
-
-	encode := gob.NewEncoder(file)
-
-	return encode.Encode(w.chunks)
-}
-
-//SaveToFile will save an byte slice of data into the path file
-func SaveToFile(path string, data []byte) error {
-	lock.Lock()
-	defer lock.Unlock()
-	return os.WriteFile(path, data, 0644)
-}
-
-//TODO check the lock variable, its the same as SaveToFIle
-func LoadFromFile(path string) ([]byte, error) {
-	lock.Lock()
-	defer lock.Unlock()
-	return os.ReadFile(path)
+	return world, nil
 }

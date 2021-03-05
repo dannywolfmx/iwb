@@ -18,8 +18,9 @@ type worldView struct {
 //NewWorldView create a worldView
 func NewWorldView(screen tcell.Screen, w world.PersistantWorld) *worldView {
 	return &worldView{
-		screen: screen,
-		world:  w,
+		screen:   screen,
+		viewport: w.GetPosition(),
+		world:    w,
 		//TODO: Check the chunk sistem
 		actualChunk: w.GetChunk(0, 0),
 	}
@@ -58,6 +59,8 @@ func (w *worldView) Draw() {
 }
 
 func (w *worldView) Run() {
+	//Firs draw
+	w.Draw()
 	for {
 		switch ev := w.screen.PollEvent().(type) {
 		case *tcell.EventResize:
@@ -67,6 +70,7 @@ func (w *worldView) Run() {
 			case tcell.KeyCtrlC:
 				//CTRL + C to exit
 				w.screen.Fini()
+				w.world.SetPosition(w.viewport)
 				if err := w.world.Persist(); err != nil {
 					fmt.Println(err)
 				}

@@ -24,5 +24,7 @@ type PersistantWorld interface {
 }
 
 type World interface {
+	SetPosition(position Position)
+	GetPosition() Position
 	GetChunk(x int, y int) Chunk
 }

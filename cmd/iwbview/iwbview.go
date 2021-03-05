@@ -10,7 +10,11 @@ import (
 func main() {
 	style := ui.DefaultStyle()
 	screen, err := ui.NewDefaultScreen(style)
-	world := file.NewFileWorld()
+	if err != nil {
+		os.Exit(1)
+	}
+
+	world, err := file.LoadWorld(file.Filename)
 
 	if err != nil {
 		os.Exit(1)
