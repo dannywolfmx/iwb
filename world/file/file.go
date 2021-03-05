@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"danirod.es/pkg/iwb/world"
-	"danirod.es/pkg/iwb/world/memory"
+	"github.com/dannywolfmx/iwb/world"
+	"github.com/dannywolfmx/iwb/world/memory"
 )
 
 const width = 256
@@ -20,16 +20,17 @@ type FileChunk struct {
 	id   int
 }
 
-func NewFileChunk(w *FileWorld, id int) *FileChunk {
+//TODO Pass change element to *element
+func NewFileChunk(w *FileWorld, id int, elements world.Elements) *FileChunk {
 	return &FileChunk{
-		MemoryChunk: memory.NewMemoryChunk(),
+		MemoryChunk: memory.NewMemoryChunk(elements),
 		root:        w,
 		id:          id,
 	}
 }
 
-func (f *FileChunk) SetRune(x int32, y int32, char rune) {
-	f.MemoryChunk.SetRune(x, y, char)
+func (f *FileChunk) SetElement(position world.Position, element world.Element) {
+	f.MemoryChunk.SetElement(position, element)
 	f.root.dirtyChunks[f.id] = true
 }
 
@@ -46,21 +47,20 @@ func NewFileWorld() *FileWorld {
 }
 
 func decodeBytes(data []byte, w *FileWorld, id int) (*FileChunk, error) {
-	runes := make([]rune, width*height)
+	elements := make(world.Elements)
 	buffer := bytes.NewReader(data)
-	err := binary.Read(buffer, binary.LittleEndian, &runes)
+	err := binary.Read(buffer, binary.LittleEndian, &elements)
 	if err != nil {
 		return nil, err
 	}
 
-	chunk := NewFileChunk(w, id)
-	chunk.SetData(runes)
+	chunk := NewFileChunk(w, id, elements)
 	return chunk, nil
 }
 
 func encodeBytes(chunk *FileChunk) ([]byte, error) {
 	buffer := new(bytes.Buffer)
-	err := binary.Write(buffer, binary.LittleEndian, chunk.GetData())
+	err := binary.Write(buffer, binary.LittleEndian, chunk.GetElements())
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,8 @@ func (w *FileWorld) GetChunk(x int, y int) world.Chunk {
 
 	// So the chunk either does not exist or file is corrupt. Recreate.
 	if err != nil {
-		chunk := NewFileChunk(w, y*width+x)
+
+		chunk := NewFileChunk(w, y*width+x, make(world.Elements))
 		w.chunks[y*width+x] = chunk
 		return chunk
 	}
@@ -94,7 +95,7 @@ func (w *FileWorld) GetChunk(x int, y int) world.Chunk {
 }
 
 func (w *FileWorld) Persist() error {
-	for k, _ := range w.dirtyChunks {
+	for k := range w.dirtyChunks {
 		chunk := w.chunks[k]
 		bytes, err := encodeBytes(chunk)
 		if err != nil {

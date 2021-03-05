@@ -4,13 +4,13 @@ import (
 	"os"
 
 	"github.com/dannywolfmx/iwb/ui"
-	"github.com/dannywolfmx/iwb/world/memory"
+	"github.com/dannywolfmx/iwb/world/file"
 )
 
 func main() {
 	style := ui.DefaultStyle()
 	screen, err := ui.NewDefaultScreen(style)
-	world := memory.NewMemoryWorld()
+	world := file.NewFileWorld()
 
 	if err != nil {
 		os.Exit(1)

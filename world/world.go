@@ -19,6 +19,7 @@ type Chunk interface {
 }
 
 type PersistantWorld interface {
+	World
 	Persist() error
 }
 

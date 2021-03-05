@@ -15,9 +15,9 @@ type MemoryChunk struct {
 	lastUpdate int64
 }
 
-func NewMemoryChunk() *MemoryChunk {
+func NewMemoryChunk(elements world.Elements) *MemoryChunk {
 	chunk := &MemoryChunk{
-		elements:   make(world.Elements),
+		elements:   elements,
 		lastUpdate: time.Now().Unix(),
 	}
 	return chunk
@@ -61,7 +61,7 @@ func NewMemoryWorld() *MemoryWorld {
 func (w *MemoryWorld) GetChunk(x int, y int) world.Chunk {
 	chunk := w.chunks[y*width+x]
 	if chunk == nil {
-		chunk = NewMemoryChunk()
+		chunk = NewMemoryChunk(make(world.Elements))
 		w.chunks[y*width+x] = chunk
 	}
 	return chunk

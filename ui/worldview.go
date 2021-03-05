@@ -10,12 +10,12 @@ import (
 type worldView struct {
 	screen      tcell.Screen
 	viewport    world.Position
-	world       world.World
+	world       world.PersistantWorld
 	actualChunk world.Chunk
 }
 
 //NewWorldView create a worldView
-func NewWorldView(screen tcell.Screen, w world.World) *worldView {
+func NewWorldView(screen tcell.Screen, w world.PersistantWorld) *worldView {
 	return &worldView{
 		screen: screen,
 		world:  w,
@@ -66,6 +66,7 @@ func (w *worldView) Run() {
 			case tcell.KeyCtrlC:
 				//CTRL + C to exit
 				w.screen.Fini()
+				w.world.Persist()
 				os.Exit(0)
 			case tcell.KeyUp:
 				//Move the viewPort to the UP
