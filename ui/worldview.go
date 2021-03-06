@@ -12,7 +12,7 @@ type worldView struct {
 	screen      tcell.Screen
 	viewport    world.Position
 	world       world.PersistantWorld
-	actualChunk world.Chunk
+	actualChunk *world.Chunk
 }
 
 //NewWorldView create a worldView
@@ -33,19 +33,26 @@ func (w *worldView) Clear() {
 
 //TODO controle the unrange position. ej: -1
 func (w *worldView) moveViewportX(position int) {
-	w.viewport.X += position
+	//If a use the position like uint i will lose the negative numbers, thats because i need to do this
+	viewport := int(w.viewport.X) + position
+	w.viewport.X = uint8(viewport)
 }
 
 //TODO controle the unrange position. ej: -1
 func (w *worldView) moveViewportY(position int) {
-	w.viewport.Y += position
+	//If a use the position like uint i will lose the negative numbers, thats because i need to do this
+	viewport := int(w.viewport.Y) + position
+	w.viewport.Y = uint8(viewport)
 }
 
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Pass the style by parameter
+//TODO Deal with the uint position: if i did 1 - 2 will be 255
 func (w *worldView) printOnScreen(text rune, viewport world.Position, wv, hv int) {
+	positionX := int(viewport.X) - int(w.viewport.X)
+	positionY := int(viewport.Y) - int(w.viewport.Y)
 	//Print On Center of screen
-	w.screen.SetContent(viewport.X-w.viewport.X+wv/2, viewport.Y-w.viewport.Y+hv/2, text, nil, tcell.StyleDefault)
+	w.screen.SetContent(positionX+wv/2, positionY+hv/2, text, nil, tcell.StyleDefault)
 	//Move the position to the next rune
 }
 

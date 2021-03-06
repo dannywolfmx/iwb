@@ -5,20 +5,20 @@ import (
 	"os"
 
 	"github.com/dannywolfmx/iwb/world"
-	"github.com/dannywolfmx/iwb/world/memory"
 )
 
 const Filename = "world.dat"
 
 type FileWorld struct {
-	Chunks         []*memory.MemoryChunk
+	Chunks         []*world.Chunk
 	ActualPosition world.Position
 }
 
+//NewFileWorld generate a new World
 func NewFileWorld() *FileWorld {
 	return &FileWorld{
-		Chunks: []*memory.MemoryChunk{
-			memory.NewMemoryChunk(make(world.Elements)),
+		Chunks: []*world.Chunk{
+			world.NewChunk(),
 		},
 	}
 }
@@ -31,7 +31,7 @@ func (w *FileWorld) GetPosition() world.Position {
 	return w.ActualPosition
 }
 
-func (w *FileWorld) GetChunk(x int, y int) world.Chunk {
+func (w *FileWorld) GetChunk(x, y int) *world.Chunk {
 	return w.Chunks[0]
 }
 

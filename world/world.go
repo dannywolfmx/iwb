@@ -1,21 +1,7 @@
 package world
 
-const width = 256
-
-const height = 256
-
 type Position struct {
-	X, Y int
-}
-
-type Element = rune
-type Elements = map[Position]rune
-
-type Chunk interface {
-	GetElement(position Position) Element
-	GetElements() Elements
-	SetElement(position Position, element Element)
-	LastUpdatedAt() int64
+	X, Y uint8
 }
 
 type PersistantWorld interface {
@@ -26,5 +12,5 @@ type PersistantWorld interface {
 type World interface {
 	SetPosition(position Position)
 	GetPosition() Position
-	GetChunk(x int, y int) Chunk
+	GetChunk(x int, y int) *Chunk
 }
