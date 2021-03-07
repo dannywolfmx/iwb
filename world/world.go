@@ -10,7 +10,8 @@ type PersistantWorld interface {
 }
 
 type World interface {
-	SetPosition(position Position)
-	GetPosition() Position
+	SetPosition(viewport, chunkLocation Position)
+	//GetPosition return the viewport, and chunk location
+	GetPosition() (Position, Position)
 	GetChunk(position Position) *Chunk
 }

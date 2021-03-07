@@ -18,13 +18,14 @@ type worldView struct {
 
 //NewWorldView create a worldView
 func NewWorldView(screen tcell.Screen, w world.PersistantWorld) *worldView {
+	viewport, chunkPosition := w.GetPosition()
 	return &worldView{
 		screen:   screen,
-		viewport: w.GetPosition(),
+		viewport: viewport,
 		world:    w,
 		//TODO: Check the chunk sistem
-		actualChunk:   w.GetChunk(world.Position{X: 0, Y: 0}),
-		chunkPosition: world.Position{X: 0, Y: 0},
+		actualChunk:   w.GetChunk(chunkPosition),
+		chunkPosition: chunkPosition,
 	}
 }
 
@@ -102,7 +103,7 @@ func (w *worldView) Run() {
 			case tcell.KeyCtrlC:
 				//CTRL + C to exit
 				w.screen.Fini()
-				w.world.SetPosition(w.viewport)
+				w.world.SetPosition(w.viewport, w.chunkPosition)
 				if err := w.world.Persist(); err != nil {
 					fmt.Println(err)
 				}

@@ -10,8 +10,9 @@ import (
 const Filename = "world.dat"
 
 type FileWorld struct {
-	Chunks         map[world.Position]*world.Chunk
-	ActualPosition world.Position
+	Chunks              map[world.Position]*world.Chunk
+	ActualViewport      world.Position
+	ActualChunkLocation world.Position
 }
 
 //NewFileWorld generate a new World
@@ -21,12 +22,14 @@ func NewFileWorld() *FileWorld {
 	}
 }
 
-func (w *FileWorld) SetPosition(position world.Position) {
-	w.ActualPosition = position
+func (w *FileWorld) SetPosition(viewport, chunkLocation world.Position) {
+	w.ActualViewport = viewport
+	w.ActualChunkLocation = chunkLocation
 }
 
-func (w *FileWorld) GetPosition() world.Position {
-	return w.ActualPosition
+//GetPosition return the viewport, and chunk location
+func (w *FileWorld) GetPosition() (world.Position, world.Position) {
+	return w.ActualViewport, w.ActualChunkLocation
 }
 
 //GetChunk find a chunk in the given position or genereta a new one
