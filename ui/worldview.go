@@ -65,7 +65,7 @@ func (w *worldView) moveViewportY(position int) {
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Pass the style by parameter
 //TODO Deal with the uint position: if i did 1 - 2 will be 255
-func (w *worldView) printOnScreen(text rune, viewport world.Position, wv, hv int, style tcell.Style) {
+func (w *worldView) printOnScreen(text rune, comb []rune, viewport world.Position, wv, hv int, style tcell.Style) {
 	positionX := int(viewport.X) - int(w.viewport.X)
 	positionY := int(viewport.Y) - int(w.viewport.Y)
 	//Print On Center of screen
@@ -78,13 +78,13 @@ func (w *worldView) Draw() {
 
 	wv, hv := w.screen.Size()
 	for viewport, text := range generateBorder() {
-		w.printOnScreen(text, viewport, wv, hv, tcell.StyleDefault.Reverse(true))
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true))
 	}
 	for viewport, text := range w.actualChunk.GetElements() {
-		w.printOnScreen(text, viewport, wv, hv, tcell.StyleDefault.Normal())
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal())
 	}
 	//Print cursor
-	w.printOnScreen(' ', w.viewport, wv, hv, tcell.StyleDefault.Normal().Reverse(true))
+	w.printOnScreen(' ', nil, w.viewport, wv, hv, tcell.StyleDefault.Normal().Reverse(true))
 
 	//Print title
 	for i, text := range fmt.Sprintf("Chunk (%d,%d) Viewport (%d, %d)", w.chunkPosition.X, w.chunkPosition.Y, w.viewport.X, w.viewport.Y) {
@@ -150,25 +150,25 @@ func generateBorder() world.Elements {
 	//TOP
 	for i := 0; i <= 255; i++ {
 		position := world.Position{X: uint8(i), Y: 0}
-		border[position] = '-'
+		border[position] = ' '
 	}
 
 	//BOTTOM
 	for i := 0; i <= 255; i++ {
 		position := world.Position{X: uint8(i), Y: 255}
-		border[position] = '-'
+		border[position] = ' '
 	}
 
 	//LEFT
 	for i := 1; i <= 254; i++ {
 		position := world.Position{X: 0, Y: uint8(i)}
-		border[position] = '|'
+		border[position] = ' '
 	}
 
 	//RIGHT
 	for i := 1; i <= 254; i++ {
 		position := world.Position{X: 255, Y: uint8(i)}
-		border[position] = '|'
+		border[position] = ' '
 	}
 
 	return border
