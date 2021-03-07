@@ -10,16 +10,14 @@ import (
 const Filename = "world.dat"
 
 type FileWorld struct {
-	Chunks         []*world.Chunk
+	Chunks         map[world.Position]*world.Chunk
 	ActualPosition world.Position
 }
 
 //NewFileWorld generate a new World
 func NewFileWorld() *FileWorld {
 	return &FileWorld{
-		Chunks: []*world.Chunk{
-			world.NewChunk(),
-		},
+		Chunks: make(map[world.Position]*world.Chunk),
 	}
 }
 
@@ -31,8 +29,21 @@ func (w *FileWorld) GetPosition() world.Position {
 	return w.ActualPosition
 }
 
-func (w *FileWorld) GetChunk(x, y int) *world.Chunk {
-	return w.Chunks[0]
+//GetChunk find a chunk in the given position or genereta a new one
+func (w *FileWorld) GetChunk(position world.Position) *world.Chunk {
+	//If the chunk exist return the finded chunk
+	if chunk, ok := w.Chunks[position]; ok {
+		return chunk
+	}
+
+	//Create a new chunk
+	chunk := world.NewChunk()
+
+	//Set the new chunk
+	w.Chunks[position] = chunk
+
+	//Return the reference
+	return chunk
 }
 
 func (w *FileWorld) Persist() error {

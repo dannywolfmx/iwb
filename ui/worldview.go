@@ -9,10 +9,11 @@ import (
 )
 
 type worldView struct {
-	screen      tcell.Screen
-	viewport    world.Position
-	world       world.PersistantWorld
-	actualChunk *world.Chunk
+	screen        tcell.Screen
+	viewport      world.Position
+	world         world.PersistantWorld
+	actualChunk   *world.Chunk
+	chunkPosition world.Position
 }
 
 //NewWorldView create a worldView
@@ -22,7 +23,8 @@ func NewWorldView(screen tcell.Screen, w world.PersistantWorld) *worldView {
 		viewport: w.GetPosition(),
 		world:    w,
 		//TODO: Check the chunk sistem
-		actualChunk: w.GetChunk(0, 0),
+		actualChunk:   w.GetChunk(world.Position{X: 0, Y: 0}),
+		chunkPosition: world.Position{X: 0, Y: 0},
 	}
 }
 
@@ -35,6 +37,13 @@ func (w *worldView) Clear() {
 func (w *worldView) moveViewportX(position int) {
 	//If a use the position like uint i will lose the negative numbers, thats because i need to do this
 	viewport := int(w.viewport.X) + position
+	if viewport > 255 {
+		w.chunkPosition.X++
+		w.actualChunk = w.world.GetChunk(w.chunkPosition)
+	} else if viewport < 0 {
+		w.chunkPosition.X--
+		w.actualChunk = w.world.GetChunk(w.chunkPosition)
+	}
 	w.viewport.X = uint8(viewport)
 }
 
@@ -42,6 +51,13 @@ func (w *worldView) moveViewportX(position int) {
 func (w *worldView) moveViewportY(position int) {
 	//If a use the position like uint i will lose the negative numbers, thats because i need to do this
 	viewport := int(w.viewport.Y) + position
+	if viewport > 255 {
+		w.chunkPosition.Y++
+		w.actualChunk = w.world.GetChunk(w.chunkPosition)
+	} else if viewport < 0 {
+		w.chunkPosition.Y--
+		w.actualChunk = w.world.GetChunk(w.chunkPosition)
+	}
 	w.viewport.Y = uint8(viewport)
 }
 
@@ -58,12 +74,18 @@ func (w *worldView) printOnScreen(text rune, viewport world.Position, wv, hv int
 
 func (w *worldView) Draw() {
 	w.screen.Clear()
+
 	wv, hv := w.screen.Size()
 	for viewport, text := range generateBorder() {
 		w.printOnScreen(text, viewport, wv, hv)
 	}
 	for viewport, text := range w.actualChunk.GetElements() {
 		w.printOnScreen(text, viewport, wv, hv)
+	}
+
+	//Print title
+	for i, text := range fmt.Sprintf("Chunk (%d,%d) Viewport (%d, %d)", w.chunkPosition.X, w.chunkPosition.Y, w.viewport.X, w.viewport.Y) {
+		w.screen.SetContent(i+wv/2, 0, text, nil, tcell.StyleDefault)
 	}
 	w.screen.Show()
 }
