@@ -59,6 +59,9 @@ func (w *worldView) printOnScreen(text rune, viewport world.Position, wv, hv int
 func (w *worldView) Draw() {
 	w.screen.Clear()
 	wv, hv := w.screen.Size()
+	for viewport, text := range generateBorder() {
+		w.printOnScreen(text, viewport, wv, hv)
+	}
 	for viewport, text := range w.actualChunk.GetElements() {
 		w.printOnScreen(text, viewport, wv, hv)
 	}
@@ -112,4 +115,36 @@ func (w *worldView) Run() {
 //Sync will sync any single cell in the screen, it is more expensive than use tcell.Screen.Show()
 func (w *worldView) Sync() {
 	w.screen.Sync()
+}
+
+//generateBorder get a border of the actual chunk
+//TODO: create a better border system using the actual viewport to eliminate unnecessary runes
+func generateBorder() world.Elements {
+	border := make(world.Elements)
+
+	//TOP
+	for i := 0; i <= 255; i++ {
+		position := world.Position{X: uint8(i), Y: 0}
+		border[position] = '-'
+	}
+
+	//BOTTOM
+	for i := 0; i <= 255; i++ {
+		position := world.Position{X: uint8(i), Y: 255}
+		border[position] = '-'
+	}
+
+	//LEFT
+	for i := 1; i <= 254; i++ {
+		position := world.Position{X: 0, Y: uint8(i)}
+		border[position] = '|'
+	}
+
+	//RIGHT
+	for i := 1; i <= 254; i++ {
+		position := world.Position{X: 255, Y: uint8(i)}
+		border[position] = '|'
+	}
+
+	return border
 }
