@@ -65,10 +65,11 @@ func (w *worldView) moveViewportY(position int) {
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Pass the style by parameter
 //TODO Deal with the uint position: if i did 1 - 2 will be 255
-func (w *worldView) printOnScreen(text rune, comb []rune, viewport world.Position, wv, hv int, style tcell.Style) {
-	positionX := int(viewport.X) - int(w.viewport.X)
-	positionY := int(viewport.Y) - int(w.viewport.Y)
+func (w *worldView) printOnScreen(text rune, comb []rune, viewport world.Position, wv, hv int, style tcell.Style, moveX, moveY int) {
+	positionX := int(viewport.X) - int(w.viewport.X) + moveX
+	positionY := int(viewport.Y) - int(w.viewport.Y) + moveY
 	//Print On Center of screen
+
 	w.screen.SetContent(positionX+wv/2, positionY+hv/2, text, nil, style)
 	//Move the position to the next rune
 }
@@ -77,14 +78,15 @@ func (w *worldView) Draw() {
 	w.screen.Clear()
 
 	wv, hv := w.screen.Size()
-	for viewport, text := range generateBorder() {
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true))
-	}
+
+	printBorders(w, wv, hv)
+	printChunks(w, wv, hv)
+
 	for viewport, text := range w.actualChunk.GetElements() {
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal())
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, 0)
 	}
 	//Print cursor
-	w.printOnScreen(' ', nil, w.viewport, wv, hv, tcell.StyleDefault.Normal().Reverse(true))
+	w.printOnScreen(' ', nil, w.viewport, wv, hv, tcell.StyleDefault.Normal().Reverse(true), 0, 0)
 
 	//Print title
 	for i, text := range fmt.Sprintf("Chunk (%d,%d) Viewport (%d, %d)", w.chunkPosition.X, w.chunkPosition.Y, w.viewport.X, w.viewport.Y) {
@@ -172,4 +174,79 @@ func generateBorder() world.Elements {
 	}
 
 	return border
+}
+
+func printBorders(w *worldView, wv, hv int) {
+	for viewport, text := range generateBorder() {
+		//CENTRAL BORDER (MAIN)
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 0)
+		//LEFT Border
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 0)
+		//RIGHT BORDER
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 0)
+		//TOP Border
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, -256)
+		//BOTTOM Border
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 256)
+
+		//Corners
+		//LEFT TOP Border
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, -256)
+		//RIGHT TOP BORDER
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, -256)
+		//LEFT BOTTOM Border
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 256)
+		//RIGHT BOTTOM BORDER
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 256)
+
+	}
+}
+
+func printChunks(w *worldView, wv, hv int) {
+	//Main chunk
+	for viewport, text := range w.actualChunk.GetElements() {
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, 0)
+	}
+
+	//Left chunk
+	position := world.Position{
+		X: w.chunkPosition.X - 1,
+		Y: w.chunkPosition.Y,
+	}
+
+	chunk := w.world.GetChunk(position)
+	for viewport, text := range chunk.GetElements() {
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), -256, 0)
+	}
+
+	//Right chunk
+	position = world.Position{
+		X: w.chunkPosition.X + 1,
+		Y: w.chunkPosition.Y,
+	}
+	chunk = w.world.GetChunk(position)
+	for viewport, text := range chunk.GetElements() {
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 256, 0)
+	}
+
+	//TOP chunk
+	position = world.Position{
+		X: w.chunkPosition.X,
+		Y: w.chunkPosition.Y - 1,
+	}
+
+	chunk = w.world.GetChunk(position)
+	for viewport, text := range chunk.GetElements() {
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, -256)
+	}
+
+	//Right chunk
+	position = world.Position{
+		X: w.chunkPosition.X,
+		Y: w.chunkPosition.Y + 1,
+	}
+	chunk = w.world.GetChunk(position)
+	for viewport, text := range chunk.GetElements() {
+		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, 256)
+	}
 }

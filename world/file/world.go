@@ -17,8 +17,9 @@ type FileWorld struct {
 
 //NewFileWorld generate a new World
 func NewFileWorld() *FileWorld {
+	chunks := make(map[world.Position]*world.Chunk)
 	return &FileWorld{
-		Chunks: make(map[world.Position]*world.Chunk),
+		Chunks: chunks,
 	}
 }
 
