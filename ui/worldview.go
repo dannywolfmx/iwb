@@ -180,6 +180,7 @@ func printBorders(w *worldView, wv, hv int) {
 	viewDistance := 4
 	for viewport, text := range generateBorder() {
 		//CENTRAL BORDER (MAIN)
+		//Always show it
 		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 0)
 
 		if w.viewport.Y < uint8(viewDistance) {
@@ -220,50 +221,60 @@ func printBorders(w *worldView, wv, hv int) {
 }
 
 func printChunks(w *worldView, wv, hv int) {
+	viewDistance := 4
 	//Main chunk
 	for viewport, text := range w.actualChunk.GetElements() {
 		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, 0)
 	}
 
-	//Left chunk
-	position := world.Position{
-		X: w.chunkPosition.X - 1,
-		Y: w.chunkPosition.Y,
+	if w.viewport.X < uint8(viewDistance) {
+
+		//Left chunk
+		position := world.Position{
+			X: w.chunkPosition.X - 1,
+			Y: w.chunkPosition.Y,
+		}
+
+		chunk := w.world.GetChunk(position)
+		for viewport, text := range chunk.GetElements() {
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), -256, 0)
+		}
 	}
 
-	chunk := w.world.GetChunk(position)
-	for viewport, text := range chunk.GetElements() {
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), -256, 0)
+	if w.viewport.X > uint8(255-viewDistance) {
+		//Right chunk
+		position := world.Position{
+			X: w.chunkPosition.X + 1,
+			Y: w.chunkPosition.Y,
+		}
+		chunk := w.world.GetChunk(position)
+		for viewport, text := range chunk.GetElements() {
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 256, 0)
+		}
 	}
 
-	//Right chunk
-	position = world.Position{
-		X: w.chunkPosition.X + 1,
-		Y: w.chunkPosition.Y,
-	}
-	chunk = w.world.GetChunk(position)
-	for viewport, text := range chunk.GetElements() {
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 256, 0)
+	if w.viewport.Y < uint8(viewDistance) {
+		//TOP chunk
+		position := world.Position{
+			X: w.chunkPosition.X,
+			Y: w.chunkPosition.Y - 1,
+		}
+
+		chunk := w.world.GetChunk(position)
+		for viewport, text := range chunk.GetElements() {
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, -256)
+		}
 	}
 
-	//TOP chunk
-	position = world.Position{
-		X: w.chunkPosition.X,
-		Y: w.chunkPosition.Y - 1,
-	}
-
-	chunk = w.world.GetChunk(position)
-	for viewport, text := range chunk.GetElements() {
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, -256)
-	}
-
-	//Right chunk
-	position = world.Position{
-		X: w.chunkPosition.X,
-		Y: w.chunkPosition.Y + 1,
-	}
-	chunk = w.world.GetChunk(position)
-	for viewport, text := range chunk.GetElements() {
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, 256)
+	if w.viewport.Y > uint8(255-viewDistance) {
+		//BOTTOM chunk
+		position := world.Position{
+			X: w.chunkPosition.X,
+			Y: w.chunkPosition.Y + 1,
+		}
+		chunk := w.world.GetChunk(position)
+		for viewport, text := range chunk.GetElements() {
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, 256)
+		}
 	}
 }
