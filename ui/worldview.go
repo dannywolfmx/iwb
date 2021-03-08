@@ -177,28 +177,45 @@ func generateBorder() world.Elements {
 }
 
 func printBorders(w *worldView, wv, hv int) {
+	viewDistance := 4
 	for viewport, text := range generateBorder() {
 		//CENTRAL BORDER (MAIN)
 		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 0)
-		//LEFT Border
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 0)
-		//RIGHT BORDER
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 0)
-		//TOP Border
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, -256)
-		//BOTTOM Border
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 256)
 
-		//Corners
-		//LEFT TOP Border
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, -256)
-		//RIGHT TOP BORDER
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, -256)
-		//LEFT BOTTOM Border
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 256)
-		//RIGHT BOTTOM BORDER
-		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 256)
+		if w.viewport.Y < uint8(viewDistance) {
+			//TOP Border
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, -256)
 
+			//LEFT TOP Border
+			if w.viewport.X < uint8(viewDistance) {
+				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, -256)
+			} else if w.viewport.X > uint8(255-viewDistance) {
+				//RIGHT TOP BORDER
+				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, -256)
+			}
+		}
+
+		if w.viewport.Y > uint8(255-viewDistance) {
+			//BOTTOM Border
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 256)
+			if w.viewport.X < uint8(viewDistance) {
+				//LEFT BOTTOM Border
+				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 256)
+			} else if w.viewport.X > uint8(255-viewDistance) {
+				//RIGHT BOTTOM BORDER
+				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 256)
+			}
+		}
+
+		if w.viewport.X > uint8(255-viewDistance) {
+			//RIGHT BORDER
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 0)
+		}
+
+		if w.viewport.X < uint8(viewDistance) {
+			//LEFT Border
+			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 0)
+		}
 	}
 }
 
