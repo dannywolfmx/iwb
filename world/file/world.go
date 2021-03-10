@@ -7,7 +7,7 @@ import (
 	"github.com/dannywolfmx/iwb/world"
 )
 
-const Filename = "world.dat"
+const Filename = "../world.dat"
 
 type FileWorld struct {
 	Chunks              map[world.Position]*world.Chunk

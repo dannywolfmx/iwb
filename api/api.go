@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"unicode/utf8"
 
@@ -27,7 +28,7 @@ func getChunk(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	//ParseUint will return a uint64 we will need to convert to uint8,
-	xc, err := strconv.ParseUint(vars["x"], 10, 8)
+	_, err = strconv.ParseUint(vars["x"], 10, 8)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "No way")
@@ -35,14 +36,14 @@ func getChunk(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//ParseUint will return a uint64 we will need to convert to uint8,
-	yc, err := strconv.ParseUint(vars["y"], 10, 8)
+	_, err = strconv.ParseUint(vars["y"], 10, 8)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "No way")
 		return
 	}
 
-	position := world.Position{X: uint8(xc), Y: uint8(yc)}
+	position := world.Position{X: 0, Y: 0}
 	fmt.Fprintf(w, "%v", data.GetChunk(position))
 }
 
@@ -109,7 +110,10 @@ func putChunks(w http.ResponseWriter, r *http.Request) {
 
 // CreateHTTPServer returns a http.Handler for creating an HTTP REST API.
 func CreateHTTPServer() *mux.Router {
-	data = file.NewFileWorld()
+	var err error
+	if data, err = file.LoadWorld(file.Filename); err != nil {
+		os.Exit(1)
+	}
 	router := mux.NewRouter()
 	router.HandleFunc("/chunks/{x}/{y}", getChunk).Methods("GET")
 	router.HandleFunc("/chunks", putChunks).Methods("PUT")
