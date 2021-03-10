@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"danirod.es/pkg/iwb/api"
+	"github.com/dannywolfmx/iwb/api"
 )
 
 func main() {

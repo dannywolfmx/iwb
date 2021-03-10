@@ -8,12 +8,12 @@ import (
 	"strconv"
 	"unicode/utf8"
 
-	"danirod.es/pkg/iwb/world"
-	"danirod.es/pkg/iwb/world/file"
+	"github.com/dannywolfmx/iwb/world"
+	"github.com/dannywolfmx/iwb/world/file"
 	"github.com/gorilla/mux"
 )
 
-var data world.World
+var data world.PersistantWorld
 
 type chunkUpdatePayload struct {
 	X     string
@@ -25,28 +25,33 @@ func getChunk(w http.ResponseWriter, r *http.Request) {
 	var err error
 	vars := mux.Vars(r)
 	w.WriteHeader(http.StatusOK)
-	var xc, yc int64
-	xc, err = strconv.ParseInt(vars["x"], 10, 64)
+
+	//ParseUint will return a uint64 we will need to convert to uint8,
+	xc, err := strconv.ParseUint(vars["x"], 10, 8)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "No way")
 		return
 	}
-	yc, err = strconv.ParseInt(vars["y"], 10, 64)
+
+	//ParseUint will return a uint64 we will need to convert to uint8,
+	yc, err := strconv.ParseUint(vars["y"], 10, 8)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "No way")
 		return
 	}
-	fmt.Fprintf(w, "%s", data.GetChunk(int32(xc), int32(yc)).GetRunes())
+
+	position := world.Position{X: uint8(xc), Y: uint8(yc)}
+	fmt.Fprintf(w, "%v", data.GetChunk(position))
 }
 
-func decodeNumber(str string) (val int32, err error) {
+func decodeNumber(str string) (val uint8, err error) {
 	var intval int64
-	if intval, err = strconv.ParseInt(str, 10, 64); err != nil {
+	if intval, err = strconv.ParseInt(str, 10, 8); err != nil {
 		return
 	}
-	return int32(intval), nil
+	return uint8(intval), nil
 }
 
 func decodeRune(str string) rune {
@@ -54,38 +59,46 @@ func decodeRune(str string) rune {
 	return char
 }
 
-func decodePayload(r *http.Request) (int32, int32, rune, error) {
+func decodePayload(r *http.Request) (world.Position, world.Element, error) {
 	var body []byte
-	var x, y, value int32
+	var x, y uint8
+	//Use a space like a rune
+	element := ' '
 	var payload chunkUpdatePayload
 	var err error
 
+	position := world.Position{X: x, Y: y}
+
 	if body, err = ioutil.ReadAll(r.Body); err != nil {
-		return 0, 0, 0, err
+		return position, element, err
 	}
 	if err = json.Unmarshal(body, &payload); err != nil {
-		return 0, 0, 0, err
+		return position, element, err
 	}
 	if x, err = decodeNumber(payload.X); err != nil {
-		return 0, 0, 0, err
+		return position, element, err
 	}
 	if y, err = decodeNumber(payload.Y); err != nil {
-		return 0, 0, 0, err
+		return position, element, err
 	}
-	value = decodeRune(payload.Value)
-	return x, y, value, nil
+	element = decodeRune(payload.Value)
+
+	position = world.Position{X: x, Y: y}
+
+	return position, element, nil
 }
 
 func putChunks(w http.ResponseWriter, r *http.Request) {
-	x, y, value, err := decodePayload(r)
+	position, element, err := decodePayload(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "%s", err.Error())
 		return
 	}
 
-	chunk := data.GetChunk(int32(x/256), int32(y/256))
-	chunk.SetRune(int32(x%256), int32(y%256), value)
+	//TODO GET A CHUNK LOCATION FROM THE CLIENT
+	chunk := data.GetChunk(position)
+	chunk.SetElement(position, element)
 	err = data.Persist()
 	if err != nil {
 		panic(err)

@@ -20,10 +20,9 @@ type worldView struct {
 func NewWorldView(screen tcell.Screen, w world.PersistantWorld) *worldView {
 	viewport, chunkPosition := w.GetPosition()
 	return &worldView{
-		screen:   screen,
-		viewport: viewport,
-		world:    w,
-		//TODO: Check the chunk sistem
+		screen:        screen,
+		viewport:      viewport,
+		world:         w,
 		actualChunk:   w.GetChunk(chunkPosition),
 		chunkPosition: chunkPosition,
 	}
@@ -34,7 +33,6 @@ func (w *worldView) Clear() {
 	w.screen.Clear()
 }
 
-//TODO controle the unrange position. ej: -1
 func (w *worldView) moveViewportX(position int) {
 	//If a use the position like uint i will lose the negative numbers, thats because i need to do this
 	viewport := int(w.viewport.X) + position
@@ -48,7 +46,6 @@ func (w *worldView) moveViewportX(position int) {
 	w.viewport.X = uint8(viewport)
 }
 
-//TODO controle the unrange position. ej: -1
 func (w *worldView) moveViewportY(position int) {
 	//If a use the position like uint i will lose the negative numbers, thats because i need to do this
 	viewport := int(w.viewport.Y) + position
@@ -63,7 +60,6 @@ func (w *worldView) moveViewportY(position int) {
 }
 
 //TODO the printer dont works with special characters, just support 1 rune at the time
-//TODO Pass the style by parameter
 //TODO Deal with the uint position: if i did 1 - 2 will be 255
 func (w *worldView) printOnScreen(text rune, comb []rune, viewport world.Position, wv, hv int, style tcell.Style, moveX, moveY int) {
 	positionX := int(viewport.X) - int(w.viewport.X) + moveX
