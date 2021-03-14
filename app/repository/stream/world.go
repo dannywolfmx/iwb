@@ -1,10 +1,8 @@
-package file
+package stream
 
 import (
 	"encoding/gob"
 	"os"
-
-	"github.com/dannywolfmx/iwb/world"
 )
 
 const Filename = "../world.dat"
