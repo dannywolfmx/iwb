@@ -4,20 +4,20 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dannywolfmx/iwb/world"
+	"github.com/dannywolfmx/iwb/entity"
 	"github.com/gdamore/tcell/v2"
 )
 
 type worldView struct {
 	screen        tcell.Screen
-	viewport      world.Position
-	world         world.PersistantWorld
-	actualChunk   *world.Chunk
-	chunkPosition world.Position
+	viewport      entity.Position
+	world         entity.PersistantWorld
+	actualChunk   *entity.Chunk
+	chunkPosition entity.Position
 }
 
 //NewWorldView create a worldView
-func NewWorldView(screen tcell.Screen, w world.PersistantWorld) *worldView {
+func NewWorldView(screen tcell.Screen, w entity.PersistantWorld) *worldView {
 	viewport, chunkPosition := w.GetPosition()
 	return &worldView{
 		screen:        screen,
@@ -43,7 +43,7 @@ func (w *worldView) moveViewportX(position int) {
 		w.chunkPosition.X--
 		w.actualChunk = w.world.GetChunk(w.chunkPosition)
 	}
-	w.viewport.X = uint8(viewport)
+	w.viewport.X = viewport
 }
 
 func (w *worldView) moveViewportY(position int) {
@@ -56,12 +56,12 @@ func (w *worldView) moveViewportY(position int) {
 		w.chunkPosition.Y--
 		w.actualChunk = w.world.GetChunk(w.chunkPosition)
 	}
-	w.viewport.Y = uint8(viewport)
+	w.viewport.Y = viewport
 }
 
 //TODO the printer dont works with special characters, just support 1 rune at the time
 //TODO Deal with the uint position: if i did 1 - 2 will be 255
-func (w *worldView) printOnScreen(text rune, comb []rune, viewport world.Position, wv, hv int, style tcell.Style, moveX, moveY int) {
+func (w *worldView) printOnScreen(text rune, comb []rune, viewport entity.Position, wv, hv int, style tcell.Style, moveX, moveY int) {
 	positionX := int(viewport.X) - int(w.viewport.X) + moveX
 	positionY := int(viewport.Y) - int(w.viewport.Y) + moveY
 	//Print On Center of screen
@@ -142,30 +142,30 @@ func (w *worldView) Sync() {
 
 //generateBorder get a border of the actual chunk
 //TODO: create a better border system using the actual viewport to eliminate unnecessary runes
-func generateBorder() world.Elements {
-	border := make(world.Elements)
+func generateBorder() entity.Elements {
+	border := make(entity.Elements)
 
 	//TOP
 	for i := 0; i <= 255; i++ {
-		position := world.Position{X: uint8(i), Y: 0}
+		position := entity.Position{X: i, Y: 0}
 		border[position] = ' '
 	}
 
 	//BOTTOM
 	for i := 0; i <= 255; i++ {
-		position := world.Position{X: uint8(i), Y: 255}
+		position := entity.Position{X: i, Y: 255}
 		border[position] = ' '
 	}
 
 	//LEFT
 	for i := 1; i <= 254; i++ {
-		position := world.Position{X: 0, Y: uint8(i)}
+		position := entity.Position{X: 0, Y: i}
 		border[position] = ' '
 	}
 
 	//RIGHT
 	for i := 1; i <= 254; i++ {
-		position := world.Position{X: 255, Y: uint8(i)}
+		position := entity.Position{X: 255, Y: i}
 		border[position] = ' '
 	}
 
@@ -179,37 +179,37 @@ func printBorders(w *worldView, wv, hv int) {
 		//Always show it
 		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 0)
 
-		if w.viewport.Y < uint8(viewDistance) {
+		if w.viewport.Y < viewDistance {
 			//TOP Border
 			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, -256)
 
 			//LEFT TOP Border
-			if w.viewport.X < uint8(viewDistance) {
+			if w.viewport.X < viewDistance {
 				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, -256)
-			} else if w.viewport.X > uint8(255-viewDistance) {
+			} else if w.viewport.X > 255-viewDistance {
 				//RIGHT TOP BORDER
 				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, -256)
 			}
 		}
 
-		if w.viewport.Y > uint8(255-viewDistance) {
+		if w.viewport.Y > 255-viewDistance {
 			//BOTTOM Border
 			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 0, 256)
-			if w.viewport.X < uint8(viewDistance) {
+			if w.viewport.X < viewDistance {
 				//LEFT BOTTOM Border
 				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 256)
-			} else if w.viewport.X > uint8(255-viewDistance) {
+			} else if w.viewport.X > 255-viewDistance {
 				//RIGHT BOTTOM BORDER
 				w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 256)
 			}
 		}
 
-		if w.viewport.X > uint8(255-viewDistance) {
+		if w.viewport.X > 255-viewDistance {
 			//RIGHT BORDER
 			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), 256, 0)
 		}
 
-		if w.viewport.X < uint8(viewDistance) {
+		if w.viewport.X < viewDistance {
 			//LEFT Border
 			w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Reverse(true), -256, 0)
 		}
@@ -223,10 +223,10 @@ func printChunks(w *worldView, wv, hv int) {
 		w.printOnScreen(text, nil, viewport, wv, hv, tcell.StyleDefault.Normal(), 0, 0)
 	}
 
-	if w.viewport.X < uint8(viewDistance) {
+	if w.viewport.X < viewDistance {
 
 		//Left chunk
-		position := world.Position{
+		position := entity.Position{
 			X: w.chunkPosition.X - 1,
 			Y: w.chunkPosition.Y,
 		}
@@ -237,9 +237,9 @@ func printChunks(w *worldView, wv, hv int) {
 		}
 	}
 
-	if w.viewport.X > uint8(255-viewDistance) {
+	if w.viewport.X > 255-viewDistance {
 		//Right chunk
-		position := world.Position{
+		position := entity.Position{
 			X: w.chunkPosition.X + 1,
 			Y: w.chunkPosition.Y,
 		}
@@ -249,9 +249,9 @@ func printChunks(w *worldView, wv, hv int) {
 		}
 	}
 
-	if w.viewport.Y < uint8(viewDistance) {
+	if w.viewport.Y < viewDistance {
 		//TOP chunk
-		position := world.Position{
+		position := entity.Position{
 			X: w.chunkPosition.X,
 			Y: w.chunkPosition.Y - 1,
 		}
@@ -262,9 +262,9 @@ func printChunks(w *worldView, wv, hv int) {
 		}
 	}
 
-	if w.viewport.Y > uint8(255-viewDistance) {
+	if w.viewport.Y > 255-viewDistance {
 		//BOTTOM chunk
-		position := world.Position{
+		position := entity.Position{
 			X: w.chunkPosition.X,
 			Y: w.chunkPosition.Y + 1,
 		}

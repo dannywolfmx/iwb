@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"unicode/utf8"
 
+	"github.com/dannywolfmx/iwb/server"
 	"github.com/dannywolfmx/iwb/world"
 	"github.com/dannywolfmx/iwb/world/file"
 	"github.com/gorilla/mux"
@@ -115,7 +116,11 @@ func CreateHTTPServer() *mux.Router {
 		os.Exit(1)
 	}
 	router := mux.NewRouter()
+	//HTTP
 	router.HandleFunc("/chunks/{x}/{y}", getChunk).Methods("GET")
 	router.HandleFunc("/chunks", putChunks).Methods("PUT")
+
+	//WS
+	router.HandleFunc("/", server.Hello)
 	return router
 }

@@ -1,8 +1,4 @@
-package world
-
-type Position struct {
-	X, Y uint8
-}
+package entity
 
 type PersistantWorld interface {
 	World

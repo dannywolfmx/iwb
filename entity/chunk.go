@@ -1,4 +1,4 @@
-package world
+package entity
 
 type Element = rune
 type Elements = map[Position]Element
@@ -7,6 +7,7 @@ type Chunk struct {
 	Elements Elements
 }
 
+//NewChunk will return a well formed Chunk reference with a empty map of elements
 func NewChunk() *Chunk {
 	elements := make(Elements)
 	return &Chunk{
@@ -14,6 +15,7 @@ func NewChunk() *Chunk {
 	}
 }
 
+//NewChunkWithElements will return a well formed Chunk reference with the given elements
 func NewChunkWithElements(elements Elements) *Chunk {
 	return &Chunk{
 		Elements: elements,

@@ -3,31 +3,31 @@ package ui
 import (
 	"testing"
 
-	"github.com/dannywolfmx/iwb/world"
+	"github.com/dannywolfmx/iwb/entity"
 	"github.com/gdamore/tcell/v2"
 )
 
 type WorldTest struct {
-	position world.Position
+	position entity.Position
 }
 
 func (w *WorldTest) Persist() error {
 	return nil
 }
-func (w *WorldTest) SetPosition(viewport, chunkLocation world.Position) {
+func (w *WorldTest) SetPosition(viewport, chunkLocation entity.Position) {
 }
-func (w *WorldTest) GetPosition() (world.Position, world.Position) {
+func (w *WorldTest) GetPosition() (entity.Position, entity.Position) {
 	return w.position, w.position
 }
-func (w *WorldTest) GetChunk(position world.Position) *world.Chunk {
-	return &world.Chunk{}
+func (w *WorldTest) GetChunk(position entity.Position) *entity.Chunk {
+	return &entity.Chunk{}
 }
 
 func TestMoveViewportX(t *testing.T) {
 	testScreen := tcell.NewSimulationScreen("")
 	world := &WorldTest{}
 	w := NewWorldView(testScreen, world)
-	positionX := uint8(0)
+	positionX := 0
 
 	//Actual position of X
 	positionX = 12
@@ -54,7 +54,7 @@ func TestMoveViewportY(t *testing.T) {
 	testScreen := tcell.NewSimulationScreen("")
 	world := &WorldTest{}
 	w := NewWorldView(testScreen, world)
-	positionY := uint8(0)
+	positionY := 0
 
 	//Actual position of X
 	positionY = 12
