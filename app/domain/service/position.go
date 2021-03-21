@@ -2,15 +2,26 @@ package service
 
 import "github.com/dannywolfmx/iwb/app/domain/entity"
 
-const maxPositionX = 100
-const maxPositionY = 100
-const minPositionX = 0
-const minPositionY = 0
+const maxChunkPositionX = 100
+const maxChunkPositionY = 100
+const minChunkPositionX = 0
+const minChunkPositionY = 0
+
+const maxElementPositionX = 100
+const maxElementPositionY = 100
+const minElementPositionX = 0
+const minElementPositionY = 0
 
 type PositionService struct{}
 
-func (p PositionService) IsAValidPosition(position entity.Position) bool {
+func (p PositionService) IsAValidChunkPosition(position entity.Position) bool {
 	x := position.X
 	y := position.Y
-	return x <= maxPositionX && x >= minPositionX && y <= maxPositionY && y >= minPositionY
+	return x <= maxChunkPositionX && x >= minChunkPositionX && y <= maxChunkPositionY && y >= minChunkPositionY
+}
+
+func (p PositionService) IsAValidElementPosition(position entity.Position) bool {
+	x := position.X
+	y := position.Y
+	return x <= maxElementPositionX && x >= minElementPositionX && y <= maxElementPositionY && y >= minElementPositionY
 }
