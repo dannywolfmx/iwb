@@ -7,13 +7,15 @@ import (
 )
 
 func TestIsAValidPosition(t *testing.T) {
+	//service
+	ser := PositionService{}
 
 	//Test max position
 	validPosition := entity.Position{
 		X: maxPositionX,
 		Y: maxPositionY,
 	}
-	if ok := IsAValidPosition(validPosition); !ok {
+	if ok := ser.IsAValidPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
@@ -22,7 +24,7 @@ func TestIsAValidPosition(t *testing.T) {
 		X: minPositionX,
 		Y: minPositionY,
 	}
-	if ok := IsAValidPosition(validPosition); !ok {
+	if ok := ser.IsAValidPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
@@ -30,7 +32,7 @@ func TestIsAValidPosition(t *testing.T) {
 		X: minPositionX,
 		Y: maxPositionY,
 	}
-	if ok := IsAValidPosition(validPosition); !ok {
+	if ok := ser.IsAValidPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
@@ -38,7 +40,7 @@ func TestIsAValidPosition(t *testing.T) {
 		X: maxPositionX,
 		Y: minPositionX,
 	}
-	if ok := IsAValidPosition(validPosition); !ok {
+	if ok := ser.IsAValidPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
@@ -48,7 +50,7 @@ func TestIsAValidPosition(t *testing.T) {
 		Y: maxPositionY + 1,
 	}
 	//The ok value need to be a "false" value to validate the test
-	if ok := IsAValidPosition(validPosition); ok {
+	if ok := ser.IsAValidPosition(validPosition); ok {
 		t.Fatal("Should be a valid position")
 	}
 
@@ -58,7 +60,47 @@ func TestIsAValidPosition(t *testing.T) {
 		Y: minPositionY - 1,
 	}
 	//The ok value need to be a "false" value to validate the test
-	if ok := IsAValidPosition(validPosition); ok {
+	if ok := ser.IsAValidPosition(validPosition); ok {
+		t.Fatal("Should be a valid position")
+	}
+
+	//Test invalid position
+	validPosition = entity.Position{
+		X: minPositionX,
+		Y: minPositionY - 1,
+	}
+	//The ok value need to be a "false" value to validate the test
+	if ok := ser.IsAValidPosition(validPosition); ok {
+		t.Fatal("Should be a valid position")
+	}
+
+	//Test invalid position
+	validPosition = entity.Position{
+		X: minPositionX - 1,
+		Y: minPositionY,
+	}
+	//The ok value need to be a "false" value to validate the test
+	if ok := ser.IsAValidPosition(validPosition); ok {
+		t.Fatal("Should be a valid position")
+	}
+
+	//Test invalid position
+	validPosition = entity.Position{
+		X: maxPositionX + 1,
+		Y: minPositionY,
+	}
+	//The ok value need to be a "false" value to validate the test
+	if ok := ser.IsAValidPosition(validPosition); ok {
+		t.Fatal("Should be a valid position")
+	}
+
+	//Test invalid position
+	validPosition = entity.Position{
+		X: maxPositionX,
+		Y: maxPositionY + 1,
+	}
+	//The ok value need to be a "false" value to validate the test
+	if ok := ser.IsAValidPosition(validPosition); ok {
 		t.Fatal("Should be a valid position")
 	}
 }
