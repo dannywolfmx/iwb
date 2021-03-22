@@ -3,10 +3,14 @@ package app
 
 import "github.com/dannywolfmx/iwb/app/domain/entity"
 
-type WorldUsecase interface {
-	//GetChunks return a map of position as key and *Chunk as value
-	GetChunk(x, y int) (*entity.Chunk, error)
-	//SetChunks set a map of position as key and *chunk as value
-	SetElement(chunk *entity.Chunk, x, y int, element entity.Element) error
-	//GetChunk return a specific *chunk from matched with the position parameter
+//SetChunks set a map of position as key and *chunk as value
+type SetElement interface {
+	//Execute the usecase
+	Execute(chunk *entity.Chunk, x, y int, element entity.Element) error
+}
+
+//GetChunks return a map of position as key and *Chunk as value
+type GetChunk interface {
+	//Execute the usecase
+	Execute(x, y int) (*entity.Chunk, error)
 }
