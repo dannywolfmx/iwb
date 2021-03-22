@@ -9,11 +9,10 @@ import (
 //Load the "data" from the stream and set it in the pointer data reference
 //data need to be a pointer to decode and set the data from the stream
 func load(stream io.Reader, data interface{}) error {
+	//Generate a new decoder from the stream
 	decoder := gob.NewDecoder(stream)
-
-	err := decoder.Decode(&data)
-	//we don't need a "if" because the client will check the returned error
-	return err
+	//Decode the data and return the error (or nil)
+	return decoder.Decode(&data)
 }
 
 //Save the "data" to the stream using the gob encoder

@@ -2,8 +2,44 @@ package stream
 
 import (
 	"encoding/gob"
+	"io"
 	"os"
+
+	"github.com/dannywolfmx/iwb/app/domain/entity"
 )
+
+//world is the struct repository
+type world struct {
+	cacheChunks map[entity.Position]*entity.Chunk
+}
+
+//NewWorldRepository will try to read the stream to load
+//the chunks cache and return it with the world.
+//if the stream can't get a proper data, the world will be generate with
+//a empty cache and save it in the stream
+func NewWorldRepository(stream io.ReadWriter) *world {
+	//Generate a new chunk
+	chunk := make(map[entity.Position]*entity.Chunk)
+	if err := load(stream, &chunk); err != nil {
+		//Generate a new chunk becouse the other are overwritten
+		chunk = make(map[entity.Position]*entity.Chunk)
+	}
+
+	//Return a new
+	return &world{
+		cacheChunks: chunk,
+	}
+}
+
+func (w *world) GetChunk(position entity.Position) *entity.Chunk {
+	//Check if the chunk exist in the cache
+	if chunk, ok := w.cacheChunks[position]; ok {
+		return chunk
+	}
+
+	//Return a new empty chunk
+	return entity.NewChunk()
+}
 
 const Filename = "../world.dat"
 

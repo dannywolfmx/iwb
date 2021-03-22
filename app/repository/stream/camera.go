@@ -1,15 +1,14 @@
 //Stream repository can use any kind of stream who use the io.ReadWriter interface,
 //for example a file
-//
 package stream
 
 import (
-	"encoding/gob"
 	"io"
 
 	"github.com/dannywolfmx/iwb/app/domain/entity"
 )
 
+//camera is the struct repositiory
 type camera struct {
 	cacheViewport entity.Position
 	stream        io.Writer
@@ -17,27 +16,18 @@ type camera struct {
 
 //NewCameraRepo will return a camera reposity from the path file
 func NewCameraRepo(stream io.ReadWriter) *camera {
-	//try to read the stream to save a cache
-	cam := &camera{
-		stream: stream,
-	}
-
-	//Set a default viewport
+	//Generate a new viewport
 	viewport := entity.NewPosition(0, 0)
-
+	//try to load data from the stream to get a cache
 	if err := load(stream, &viewport); err != nil {
-
 		//Set a default viewport to save a new cache in the stream
-		cam.SetViewport(entity.NewPosition(0, 0))
-
-		//Return the default cam
-		return cam
+		viewport = entity.NewPosition(0, 0)
 	}
-
 	//Set the load viewport
-	cam.cacheViewport = viewport
-
-	return cam
+	return &camera{
+		stream:        stream,
+		cacheViewport: viewport,
+	}
 }
 
 //Viewport
@@ -54,20 +44,4 @@ func (c *camera) SetViewport(viewport entity.Position) error {
 //Return a viewport, and chunkLocation
 func (c *camera) GetViewport() (entity.Position, error) {
 	return c.cacheViewport, nil
-}
-
-//Load the "data" from the stream and set it in the pointer data reference
-//data need to be a pointer to decode and set the data from the stream
-func load(stream io.Reader, data interface{}) error {
-	decoder := gob.NewDecoder(stream)
-
-	err := decoder.Decode(&data)
-	//we don't need a if becouse the client will check the returned error
-	return err
-}
-
-//Save the "data" to the stream using the gob encoder
-func save(stream io.Writer, data interface{}) error {
-	encoder := gob.NewEncoder(stream)
-	return encoder.Encode(data)
 }
