@@ -21,9 +21,7 @@ func NewGetChunk(repo app.WorldRepository) *getChunk {
 
 //Execute will performe the GetCHunk usecase
 //pass a valid x, y postion and return a chunk pointer or error
-func (g *getChunk) Execute(x, y int) (*entity.Chunk, error) {
-	//Get Position
-	position := entity.Position{X: x, Y: y}
+func (g *getChunk) Execute(position entity.Position) (*entity.Chunk, error) {
 	//Validate the position with the service
 	if ok := g.service.IsAValidChunkPosition(position); !ok {
 		//Invalid position

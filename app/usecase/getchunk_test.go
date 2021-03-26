@@ -21,7 +21,7 @@ func TestGetChunk(t *testing.T) {
 
 	getChunk = NewGetChunk(repo)
 	//Right value
-	chunk, err := getChunk.Execute(0, 0)
+	chunk, err := getChunk.Execute(entity.Position{X: 0, Y: 0})
 
 	if err != nil {
 		t.Fatalf("Error in GetChunk %s", err)
@@ -32,7 +32,7 @@ func TestGetChunk(t *testing.T) {
 	}
 
 	//Test if the usecase is passing the position to the repositiory
-	chunk, _ = getChunk.Execute(1, 0)
+	chunk, _ = getChunk.Execute(entity.Position{X: 1, Y: 0})
 
 	//This need to be an nil value
 	if chunk != nil {

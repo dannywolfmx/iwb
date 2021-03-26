@@ -17,3 +17,13 @@ type CameraRepository interface {
 	//Return a viewport, and chunkLocation
 	GetViewport() entity.Position
 }
+
+//TODO PRUEBA
+type UserRepository interface {
+	SetPosition(user *entity.User, position entity.Position) error
+	//GetPosition find the position of the user
+	//The firs return value is the user position in the chunk
+	//The second return value is the chunk position in the world
+	GetPosition(user *entity.User) (entity.Position, entity.Position, error)
+	Exist(user *entity.User) bool
+}
