@@ -1,10 +1,19 @@
 package entity
 
-type Element = rune
+import "time"
+
 type Elements = map[Position]Element
 
-type Chunk struct {
+type UserElements struct {
+	Account  *User
 	Elements Elements
+}
+
+type Chunk struct {
+	//map of users elements in the chunk
+	//ID is the user id
+	UsersElements map[ID]UserElements
+	LastUpdate    time.Time
 }
 
 //NewChunk will return a well formed Chunk reference with a empty map of elements
@@ -15,6 +24,8 @@ func NewChunk() *Chunk {
 	}
 }
 
+//Business logic
+
 //NewChunkWithElements will return a well formed Chunk reference with the given elements
 func NewChunkWithElements(elements Elements) *Chunk {
 	return &Chunk{
@@ -24,7 +35,6 @@ func NewChunkWithElements(elements Elements) *Chunk {
 
 //GetElement return a Element in the given position if extist, or return a space like element if the element doesn't exist
 func (c *Chunk) GetElement(position Position) Element {
-
 	if element, ok := c.Elements[position]; ok {
 		return element
 	}

@@ -1,6 +1,8 @@
 package entity
 
+type ID = string
+
 type User struct {
-	//Position of the user in the map
-	position Position
+	ID   ID
+	Name string
 }
