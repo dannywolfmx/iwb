@@ -17,3 +17,13 @@ type Session struct {
 	//UID to know the session request from the user
 	Token Token
 }
+
+func NewSession(username string, token Token, position Position) *Session {
+	return &Session{
+		ActualChunkPosition: position,
+		Account: &User{
+			Name: username,
+		},
+		Token: token,
+	}
+}

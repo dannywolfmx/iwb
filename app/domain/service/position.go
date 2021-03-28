@@ -36,3 +36,9 @@ func (p PositionService) IsAValidUserPosition(position entity.Position) bool {
 	y := position.Y
 	return x <= maxUserPositionX && x >= minUserPositionX && y <= maxUserPositionY && y >= minElementPositionY
 }
+
+func (p PositionService) GetDefaultPosition() entity.Position {
+	return entity.Position{
+		X: 0, Y: 0,
+	}
+}

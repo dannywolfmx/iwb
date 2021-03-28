@@ -10,4 +10,6 @@ var (
 
 	//SetElement erros
 	ErrorOnSetElementToDB = errors.New("Error repository set element")
+
+	//
 )
