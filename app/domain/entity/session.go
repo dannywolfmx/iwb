@@ -18,9 +18,8 @@ type Session struct {
 	Token Token
 }
 
-func NewSession(username string, token Token, position Position) *Session {
+func NewSession(username string, token Token) *Session {
 	return &Session{
-		ActualChunkPosition: position,
 		Account: &User{
 			Name: username,
 		},
