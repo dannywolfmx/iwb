@@ -11,3 +11,8 @@ type SessionRepository interface {
 type UserRepository interface {
 	Exist(user *entity.User) bool
 }
+
+//go:generate mockgen --destination=./repository/mock/chunk.go . ChunkRepository
+type ChunkRepository interface {
+	Get(position entity.Position) (*entity.Chunk, error)
+}

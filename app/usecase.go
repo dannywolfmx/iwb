@@ -3,8 +3,6 @@ package app
 
 import "github.com/dannywolfmx/iwb/app/domain/entity"
 
-// TODO implement
-//
 //GenerateSession will generate a session to keep tracking of the user in the rest of the application
 //It is a friendly way to request a loggin to the user, just a name
 type GenerateSession interface {
@@ -14,7 +12,7 @@ type GenerateSession interface {
 // TODO implement
 //
 //GetSessionChunkElements
-//Return a chunk of the actual session
+//Return the actual session's chunk
 type GetSessionChunk interface {
 	Execute(session *entity.Session) (*entity.Chunk, error)
 }

@@ -12,13 +12,17 @@ func TestGenerateSession(t *testing.T) {
 
 	//Setup test variables
 	testToken := "123456"
+
+	//Define a generate token function
 	testGenerateTokenFunction := func(user *entity.User) (string, error) {
 		return testToken, nil
 	}
 
+	//Define a validate user function
 	testValidateUser := func(user *entity.User) bool {
 		return true
 	}
+
 	testUser := &entity.User{Name: "Test"}
 	testSession := entity.NewSession(testUser.Name, testToken)
 

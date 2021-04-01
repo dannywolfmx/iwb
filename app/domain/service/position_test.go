@@ -6,105 +6,6 @@ import (
 	"github.com/dannywolfmx/iwb/app/domain/entity"
 )
 
-func TestIsAValidChunkPosition(t *testing.T) {
-	//service
-	ser := PositionService{}
-
-	//Test max position
-	validPosition := entity.Position{
-		X: maxChunkPositionX,
-		Y: maxChunkPositionY,
-	}
-	if ok := ser.IsAValidChunkPosition(validPosition); !ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	//Test min positon
-	validPosition = entity.Position{
-		X: minChunkPositionX,
-		Y: minChunkPositionY,
-	}
-	if ok := ser.IsAValidChunkPosition(validPosition); !ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	validPosition = entity.Position{
-		X: minChunkPositionX,
-		Y: maxChunkPositionY,
-	}
-	if ok := ser.IsAValidChunkPosition(validPosition); !ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	validPosition = entity.Position{
-		X: maxChunkPositionX,
-		Y: minChunkPositionX,
-	}
-	if ok := ser.IsAValidChunkPosition(validPosition); !ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	//Test invalid position
-	validPosition = entity.Position{
-		X: maxChunkPositionX + 1,
-		Y: maxChunkPositionY + 1,
-	}
-	//The ok value need to be a "false" value to validate the test
-	if ok := ser.IsAValidChunkPosition(validPosition); ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	//Test invalid position
-	validPosition = entity.Position{
-		X: minChunkPositionX - 1,
-		Y: minChunkPositionY - 1,
-	}
-	//The ok value need to be a "false" value to validate the test
-	if ok := ser.IsAValidChunkPosition(validPosition); ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	//Test invalid position
-	validPosition = entity.Position{
-		X: minChunkPositionX,
-		Y: minChunkPositionY - 1,
-	}
-	//The ok value need to be a "false" value to validate the test
-	if ok := ser.IsAValidChunkPosition(validPosition); ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	//Test invalid position
-	validPosition = entity.Position{
-		X: minChunkPositionX - 1,
-		Y: minChunkPositionY,
-	}
-	//The ok value need to be a "false" value to validate the test
-	if ok := ser.IsAValidChunkPosition(validPosition); ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	//Test invalid position
-	validPosition = entity.Position{
-		X: maxChunkPositionX + 1,
-		Y: minChunkPositionY,
-	}
-	//The ok value need to be a "false" value to validate the test
-	if ok := ser.IsAValidChunkPosition(validPosition); ok {
-		t.Fatal("Should be a valid position")
-	}
-
-	//Test invalid position
-	validPosition = entity.Position{
-		X: maxChunkPositionX,
-		Y: maxChunkPositionY + 1,
-	}
-	//The ok value need to be a "false" value to validate the test
-	if ok := ser.IsAValidChunkPosition(validPosition); ok {
-		t.Fatal("Should be a valid position")
-	}
-}
-
 func TestIsAValidElementPosition(t *testing.T) {
 	//service
 	ser := PositionService{}
@@ -300,5 +201,43 @@ func TestIsAValidUserPosition(t *testing.T) {
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidUserPosition(validPosition); ok {
 		t.Fatal("Should be a valid position")
+	}
+}
+
+func TestGetChunkPosition(t *testing.T) {
+	testUserPosition := entity.Position{
+		X: maxElementPositionX,
+		Y: maxElementPositionY,
+	}
+
+	expectedChunkPosition := entity.Position{
+		X: 255,
+		Y: 255,
+	}
+
+	service := PositionService{}
+
+	chunkPosition := service.CalculateChunkPosition(testUserPosition)
+
+	if chunkPosition != expectedChunkPosition {
+		t.Fatalf("ChunkPosition %v diferent to expected position %v",
+			chunkPosition, expectedChunkPosition)
+	}
+
+	testUserPosition = entity.Position{
+		X: minElementPositionX,
+		Y: minElementPositionY,
+	}
+
+	expectedChunkPosition = entity.Position{
+		X: 0,
+		Y: 0,
+	}
+
+	chunkPosition = service.CalculateChunkPosition(testUserPosition)
+
+	if chunkPosition != expectedChunkPosition {
+		t.Fatalf("ChunkPosition %v diferent to expected position %v",
+			chunkPosition, expectedChunkPosition)
 	}
 }
