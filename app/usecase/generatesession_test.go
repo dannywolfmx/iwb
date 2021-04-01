@@ -16,6 +16,9 @@ func TestGenerateSession(t *testing.T) {
 		return testToken, nil
 	}
 
+	testValidateUser := func(user *entity.User) bool {
+		return true
+	}
 	testUser := &entity.User{Name: "Test"}
 	testSession := entity.NewSession(testUser.Name, testToken)
 
@@ -29,7 +32,7 @@ func TestGenerateSession(t *testing.T) {
 	repo.EXPECT().Save(gomock.Eq(testSession)).Return(nil)
 
 	//Run the usecase test
-	service := NewGenerateSession(repo, testGenerateTokenFunction)
+	service := NewGenerateSession(repo, testGenerateTokenFunction, testValidateUser)
 
 	if _, err := service.Execute(testUser); err != nil {
 		t.Fatalf("Error on execute service: %s", err)
