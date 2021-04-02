@@ -12,8 +12,8 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test max position
 	validPosition := entity.Position{
-		X: maxElementPositionX,
-		Y: maxElementPositionY,
+		X: MaxElementPositionX,
+		Y: MaxElementPositionY,
 	}
 	if ok := ser.IsAValidElementPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
@@ -21,24 +21,24 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test min positon
 	validPosition = entity.Position{
-		X: minElementPositionX,
-		Y: minElementPositionY,
+		X: MinElementPositionX,
+		Y: MinElementPositionY,
 	}
 	if ok := ser.IsAValidElementPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
 	validPosition = entity.Position{
-		X: minElementPositionX,
-		Y: maxElementPositionY,
+		X: MinElementPositionX,
+		Y: MaxElementPositionY,
 	}
 	if ok := ser.IsAValidElementPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
 	validPosition = entity.Position{
-		X: maxElementPositionX,
-		Y: minElementPositionX,
+		X: MaxElementPositionX,
+		Y: MinElementPositionX,
 	}
 	if ok := ser.IsAValidElementPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
@@ -46,8 +46,8 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: maxElementPositionX + 1,
-		Y: maxElementPositionY + 1,
+		X: MaxElementPositionX + 1,
+		Y: MaxElementPositionY + 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidElementPosition(validPosition); ok {
@@ -56,8 +56,8 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: minElementPositionX - 1,
-		Y: minElementPositionY - 1,
+		X: MinElementPositionX - 1,
+		Y: MinElementPositionY - 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidElementPosition(validPosition); ok {
@@ -66,8 +66,8 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: minElementPositionX,
-		Y: minElementPositionY - 1,
+		X: MinElementPositionX,
+		Y: MinElementPositionY - 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidElementPosition(validPosition); ok {
@@ -76,8 +76,8 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: minElementPositionX - 1,
-		Y: minElementPositionY,
+		X: MinElementPositionX - 1,
+		Y: MinElementPositionY,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidElementPosition(validPosition); ok {
@@ -86,8 +86,8 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: maxElementPositionX + 1,
-		Y: minElementPositionY,
+		X: MaxElementPositionX + 1,
+		Y: MinElementPositionY,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidElementPosition(validPosition); ok {
@@ -96,8 +96,8 @@ func TestIsAValidElementPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: maxElementPositionX,
-		Y: maxElementPositionY + 1,
+		X: MaxElementPositionX,
+		Y: MaxElementPositionY + 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidElementPosition(validPosition); ok {
@@ -111,8 +111,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test max position
 	validPosition := entity.Position{
-		X: maxUserPositionX,
-		Y: maxUserPositionY,
+		X: MaxUserPositionX,
+		Y: MaxUserPositionY,
 	}
 	if ok := ser.IsAValidUserPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
@@ -120,24 +120,24 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test min positon
 	validPosition = entity.Position{
-		X: minUserPositionX,
-		Y: minUserPositionY,
+		X: MinUserPositionX,
+		Y: MinUserPositionY,
 	}
 	if ok := ser.IsAValidUserPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
 	validPosition = entity.Position{
-		X: minUserPositionX,
-		Y: maxUserPositionY,
+		X: MinUserPositionX,
+		Y: MaxUserPositionY,
 	}
 	if ok := ser.IsAValidUserPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
 	}
 
 	validPosition = entity.Position{
-		X: maxUserPositionX,
-		Y: minUserPositionX,
+		X: MaxUserPositionX,
+		Y: MinUserPositionX,
 	}
 	if ok := ser.IsAValidUserPosition(validPosition); !ok {
 		t.Fatal("Should be a valid position")
@@ -145,8 +145,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: maxUserPositionX + 1,
-		Y: maxUserPositionY + 1,
+		X: MaxUserPositionX + 1,
+		Y: MaxUserPositionY + 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidUserPosition(validPosition); ok {
@@ -155,8 +155,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: minUserPositionX - 1,
-		Y: minUserPositionY - 1,
+		X: MinUserPositionX - 1,
+		Y: MinUserPositionY - 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidUserPosition(validPosition); ok {
@@ -165,8 +165,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: minUserPositionX,
-		Y: minUserPositionY - 1,
+		X: MinUserPositionX,
+		Y: MinUserPositionY - 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidUserPosition(validPosition); ok {
@@ -175,8 +175,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: minUserPositionX - 1,
-		Y: minUserPositionY,
+		X: MinUserPositionX - 1,
+		Y: MinUserPositionY,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidUserPosition(validPosition); ok {
@@ -185,8 +185,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: maxUserPositionX + 1,
-		Y: minUserPositionY,
+		X: MaxUserPositionX + 1,
+		Y: MinUserPositionY,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidUserPosition(validPosition); ok {
@@ -195,8 +195,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 	//Test invalid position
 	validPosition = entity.Position{
-		X: maxUserPositionX,
-		Y: maxUserPositionY + 1,
+		X: MaxUserPositionX,
+		Y: MaxUserPositionY + 1,
 	}
 	//The ok value need to be a "false" value to validate the test
 	if ok := ser.IsAValidUserPosition(validPosition); ok {
@@ -206,8 +206,8 @@ func TestIsAValidUserPosition(t *testing.T) {
 
 func TestGetChunkPosition(t *testing.T) {
 	testUserPosition := entity.Position{
-		X: maxElementPositionX,
-		Y: maxElementPositionY,
+		X: MaxElementPositionX,
+		Y: MaxElementPositionY,
 	}
 
 	expectedChunkPosition := entity.Position{
@@ -225,8 +225,8 @@ func TestGetChunkPosition(t *testing.T) {
 	}
 
 	testUserPosition = entity.Position{
-		X: minElementPositionX,
-		Y: minElementPositionY,
+		X: MinElementPositionX,
+		Y: MinElementPositionY,
 	}
 
 	expectedChunkPosition = entity.Position{

@@ -6,7 +6,7 @@ type Token = string
 
 type Session struct {
 	//ActualChunkPosition is the position of the session in the world
-	ActualChunkPosition Position
+	UserPosition Position
 
 	//Account information
 	Account *User

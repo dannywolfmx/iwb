@@ -27,6 +27,7 @@ func NewTokenService(key *rsa.PrivateKey, issuer string) *TokenService {
 	}
 }
 
+// TODO change add more info into the token.Set()
 func (t *TokenService) GenerateJWT(user *entity.User) (entity.Token, error) {
 	token := jwt.New()
 
