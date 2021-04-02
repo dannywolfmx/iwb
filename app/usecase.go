@@ -1,7 +1,11 @@
 //usecase.go descripbe the interface of the "app" usecases
 package app
 
-import "github.com/dannywolfmx/iwb/app/domain/entity"
+import (
+	"time"
+
+	"github.com/dannywolfmx/iwb/app/domain/entity"
+)
 
 //GenerateSession will generate a session to keep tracking of the user in the rest of the application
 //It is a friendly way to request a loggin to the user, just a name
@@ -9,18 +13,22 @@ type GenerateSession interface {
 	Execute(user *entity.User) (*entity.Session, error)
 }
 
-// TODO implement
-//
 //GetSessionChunkElements
 //Return the actual session's chunk
+//And update the session.LastChunkUpdate
 type GetSessionChunk interface {
 	Execute(session *entity.Session) (*entity.Chunk, error)
+}
+
+type UpdateLastChunkUpdate interface {
+	Execute(session *entity.Session, time time.Time) (*entity.Session, error)
 }
 
 // TODO implement
 //
 //SetElement
-//Set an element in the actual position of the user
+//Set an element chunk in the actual position of the user
+//Check if the chunk already exist or create that
 //And move the user to the next position
 type SetElement interface {
 	Execute(session *entity.Session, element entity.Element) error

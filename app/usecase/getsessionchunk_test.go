@@ -9,14 +9,9 @@ import (
 	"github.com/golang/mock/gomock"
 )
 
-// TODO
-// 	*
-//
-
 func TestGetSessionChunk(t *testing.T) {
 	//TEST TO VALIDATE POSITION IN RANGE
 	//Arrange
-	//
 	servPosition := service.PositionService{}
 	testUserPosition := entity.Position{
 		X: service.MaxUserPositionX,
@@ -30,7 +25,7 @@ func TestGetSessionChunk(t *testing.T) {
 
 	testChunk := entity.NewChunk()
 
-	//MOCK REPOSITORY
+	//MOCK CHUNK REPOSITORY
 	c := gomock.NewController(t)
 	defer c.Finish()
 	m := mock_app.NewMockChunkRepository(c)

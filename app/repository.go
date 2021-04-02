@@ -1,10 +1,13 @@
 package app
 
-import "github.com/dannywolfmx/iwb/app/domain/entity"
+import (
+	"github.com/dannywolfmx/iwb/app/domain/entity"
+)
 
 //go:generate mockgen --destination=./repository/mock/session.go . SessionRepository
 type SessionRepository interface {
-	Save(*entity.Session) error
+	Save(session *entity.Session) error
+	Update(session *entity.Session) error
 }
 
 //go:generate mockgen --destination=./repository/mock/user.go . UserRepository
