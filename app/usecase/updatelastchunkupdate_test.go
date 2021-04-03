@@ -29,7 +29,7 @@ func TestUpdateLastChunkUpdate(t *testing.T) {
 	m := mock_app.NewMockSessionRepository(c)
 
 	//testSession -> (error:nil)
-	m.EXPECT().Update(testSession).Return(nil).MaxTimes(1)
+	m.EXPECT().Update(gomock.Eq(testSession)).Return(nil)
 	updateLastChunk := NewUpdateLastChunkUpdate(m)
 	//Assert
 	//

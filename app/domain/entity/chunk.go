@@ -12,14 +12,14 @@ type UserElements struct {
 type Chunk struct {
 	//map of users elements in the chunk
 	//ID is the user id
-	UsersElements map[ID]UserElements
+	UsersElements map[ID]*UserElements
 	LastUpdate    time.Time
 }
 
 //Create a empty chunk
 func NewChunk() *Chunk {
 	return &Chunk{
-		UsersElements: make(map[string]UserElements),
+		UsersElements: make(map[ID]*UserElements),
 		LastUpdate:    time.Now(),
 	}
 }

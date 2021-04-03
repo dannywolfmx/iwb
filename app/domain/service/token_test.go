@@ -30,12 +30,10 @@ func TestGenerateJWT(t *testing.T) {
 
 	service := NewTokenService(key, "https://localhost")
 
-	payload, err := service.GenerateJWT(userTest)
+	_, err := service.GenerateJWT(userTest)
 	if err != nil {
 		t.Fatalf("Error on generate JWT: %s", err)
 	}
-
-	t.Log(payload)
 }
 
 func TestParseJWT(t *testing.T) {
@@ -50,11 +48,10 @@ func TestParseJWT(t *testing.T) {
 		t.Fatalf("Error on generate JWT: %s", err)
 	}
 
-	user, err := service.ParseJWT(payload)
+	_, err = service.ParseJWT(payload)
 
 	if err != nil {
 		t.Fatalf("Error on parse JWT: %s", err)
 	}
 
-	t.Log(user)
 }

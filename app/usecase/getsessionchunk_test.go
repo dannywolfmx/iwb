@@ -31,7 +31,7 @@ func TestGetSessionChunk(t *testing.T) {
 	m := mock_app.NewMockChunkRepository(c)
 
 	//testPosition -> (chunk: testchunk, error: nil)
-	m.EXPECT().Get(gomock.Eq(testChunkPosition)).Return(testChunk, nil).MaxTimes(1)
+	m.EXPECT().Get(gomock.Eq(testChunkPosition)).Return(testChunk, nil)
 
 	//Act
 	getSessionChunk := NewGetSessionChunk(m, servPosition)
